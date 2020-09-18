@@ -1,0 +1,7 @@
+name = "RvSpectMLBase"
+uuid = "c48404b2-35ea-40e7-ac7f-06a53de703d6"
+authors = ["Eric Ford"]
+version = "0.0.1"
+
+[compat]
+julia = "1.5"
