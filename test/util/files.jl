@@ -8,6 +8,6 @@ using Test
 =#
 
 @testset "File Utilities" begin
-    @test_nowarn read_data_paths()
-    @test_nowarn code_to_include_param_jl()
+    @test_nowarn read_data_paths(paths_to_search=[pwd(),joinpath(pkgdir(RvSpectMLBase),"test")])
+    @test_nowarn code_to_include_param_jl([pwd(),joinpath(pkgdir(RvSpectMLBase),"test")])
 end

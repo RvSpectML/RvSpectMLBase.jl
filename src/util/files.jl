@@ -26,9 +26,10 @@ function read_data_paths(; paths_to_search::Union{String,AbstractVector{String}}
          @error("Can't access instrument's base data directory ", data_paths_jl, ".")
    end
 
-   if isfile(joinpath(data_paths_jl,"data_paths.jl"))
+   path_to_data_paths = joinpath(pwd(),data_paths_jl,"data_paths.jl")
+   if isfile(path_to_data_paths)
       code_to_include_param = quote
-         include(joinpath(pwd(),data_paths_jl,"data_paths.jl"))
+         include($path_to_data_paths)
       end
    else
       println("# Did not locate ", joinpath(pwd(),data_paths_jl,"data_paths.jl") )
@@ -88,26 +89,29 @@ Warning:  Malicious users could insert arbitrary code into param.jl.  Don't be a
 """
 function code_to_include_param_jl(paths_to_search::Union{String,AbstractVector{String}} = default_paths_to_search; filename::String = "param.jl", verbose::Bool = true)
    if verbose   println("# Looking for param.jl file to set configuration parameters.")    end
-   idx_path = findfirst(isfile,map(d->joinpath(d,filename),default_paths_to_search))
+   idx_path = findfirst(isfile,map(d->joinpath(d,filename),paths_to_search))
    if isnothing(idx_path)
       @error(" Couldn't find $filename in $default_paths_to_search")
       return Expr()
    end
-   data_path = default_paths_to_search[idx_path]
+   data_path = paths_to_search[idx_path]
 
-   if isfile(joinpath(data_path,filename))
+   path_to_param = joinpath(pwd(),data_path,filename)
+   if isfile(path_to_param )
       println("# Reading parameter values from ", filename)
       code_to_include_param = quote
-         include(joinpath(pwd(),$data_path,$filename))
+         include($path_to_param)
       end
    else
-      println("# Did not locate ", filename, " in ",data_path, ".  Returning code to set default values for lots of things.")
+      println("# Did not locate ", filename, " in ",data_path, ".") #  Returning code to set default values for lots of things.")
       # Set defaults in case not in param.jl
       code_to_include_param = quote
+         #=
          df_files_use = df_files
          espresso_filename = joinpath(pkgdir(RvSpectMLBase),"data","masks","G2.espresso.mas")
          ccf_mid_velocity = 0
          tophap_ccf_mask_scale_factor=1.6
+         =#
       end
    end
    return code_to_include_param
