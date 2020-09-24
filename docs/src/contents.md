@@ -1,6 +1,3 @@
-```@meta
-CurrentModule = RvSpectMLBase
-```
 # API Overview
 
 ```@contents

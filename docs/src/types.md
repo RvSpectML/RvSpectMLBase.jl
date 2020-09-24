@@ -7,15 +7,17 @@ CurrentModule = RvSpectMLBase
 Pages = ["types.md"]
 Depth = 3
 ```
-## General purpose
+## Abstract Types
 ```@autodocs
 Modules = [ RvSpectMLBase ]
 Private = false
 Order = [:type]
+Filter = t -> isabstracttype(t)
 ```
-## Interpolation Algorithms
+
+## General purpose
 ```@autodocs
-Modules = [ RvSpectMLBase.LinearInterpolation ]
+Modules = [ RvSpectMLBase ]
 Private = false
 Order = [:type]
 ```

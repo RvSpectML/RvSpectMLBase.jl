@@ -15,7 +15,7 @@ makedocs(;
         "Home" => "index.md",
         "API" => [
             "Overview" => "contents.md",
-#            "Modules" => "modules.md",
+            "Modules" => "modules.md",
             "Functions" => "functions.md",
             "Types" => "types.md"
             ],

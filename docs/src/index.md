@@ -13,14 +13,7 @@ import Pkg
 Pkg.add("https://github.com/RvSpectML/RvSpectMLBase.jl")
 Pkg.instantiate()
 ```
-- Run the tests 
+- Run the tests
 ```
 > include("test/runtests.jl")
-```
-
-```@index
-```
-
-```@autodocs
-Modules = [RvSpectMLBase]
 ```
