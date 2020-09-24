@@ -27,8 +27,13 @@ function read_data_paths(; paths_to_search::Union{String,AbstractVector{String}}
    end
 
    if isfile(joinpath(data_paths_jl,"data_paths.jl"))
-       include(joinpath(pwd(),data_paths_jl,"data_paths.jl"))
+      code_to_include_param = quote
+         include(joinpath(pwd(),data_paths_jl,"data_paths.jl"))
+      end
+   else
+      println("# Did not locate ", joinpath(pwd(),data_paths_jl,"data_paths.jl") )
    end
+   return code_to_include_param
 end
 
 #=
