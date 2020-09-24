@@ -88,12 +88,12 @@ Warning:  Malicious users could insert arbitrary code into param.jl.  Don't be a
 """
 function code_to_include_param_jl(paths_to_search::Union{String,AbstractVector{String}} = default_paths_to_search; filename::String = "param.jl", verbose::Bool = true)
    if verbose   println("# Looking for param.jl file to set configuration parameters.")    end
-   idx_path = findfirst(isfile,map(d->joinpath(d,filename),default_paths_to_search))
+   idx_path = findfirst(isfile,map(d->joinpath(d,filename),paths_to_search))
    if isnothing(idx_path)
       @error(" Couldn't find $filename in $default_paths_to_search")
       return Expr()
    end
-   data_path = default_paths_to_search[idx_path]
+   data_path = paths_to_search[idx_path]
 
    if isfile(joinpath(data_path,filename))
       println("# Reading parameter values from ", filename)
