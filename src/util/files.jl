@@ -8,20 +8,12 @@ Created: Sept 2020
 const default_paths_to_search = [pwd(),"examples",joinpath(pkgdir(RvSpectMLBase),"examples"),"/gpfs/group/ebf11/default/ebf11/expres/inputs"]
 
 
-""" make_manifest(target_subdir::String, Inst::Module; [opts] )
-Returns a dataframe containing a list of files to be read and some metadata (e.g., observation times)
-
-# Optional arguements
-- max_spectra_to_use (default_max_spectra_to_use)
-- paths_to_search (default_paths_to_search)
-- verbose = true
+""" read_data_paths( ; path_to_search )
+Looks for data_paths.jl and includes it to set data_paths
 
 Warning:  Malicious users could insert arbitrary code into data_paths.jl.  Don't be a malicous user.
 """
-function make_manifest(target_subdir::String, Inst::Module; paths_to_search::Union{String,AbstractVector{String}} = default_paths_to_search,
-      # max_spectra_to_use::Integer = 1000, target_fits::String = target_subdir,
-      verbose::Bool = true)
-
+function read_data_paths(; paths_to_search::Union{String,AbstractVector{String}} = default_paths_to_search, verbose::Bool = true)
    if verbose   println("# Looking for data paths and config files in default_paths_to_search.")    end
    idx_path = findfirst(isfile,map(d->joinpath(d,"data_paths.jl"),paths_to_search))
    if isnothing(idx_path)
@@ -37,9 +29,17 @@ function make_manifest(target_subdir::String, Inst::Module; paths_to_search::Uni
    if isfile(joinpath(data_paths_jl,"data_paths.jl"))
        include(joinpath(pwd(),data_paths_jl,"data_paths.jl"))
    end
+end
 
-   @warn "Need to do something about this after refactoring instruments out of Base pacakge"
-   data_path = joinpath(data_path,target_subdir)
+#=
+""" make_manifest(data_path::String, target_subdir::String, Inst::Module; [opts] )
+Returns a dataframe containing a list of files to be read and some metadata (e.g., observation times)
+
+# Optional arguements
+- verbose = true
+
+"""
+function make_manifest(data_path::String, target_subdir::String, Inst::Module; verbose::Bool = true)
    #=
    if Inst == EXPRES
       #@assert isdefined(Main,:expres_data_path)
@@ -71,8 +71,7 @@ function make_manifest(target_subdir::String, Inst::Module; paths_to_search::Uni
    =#
    return df_files
 end
-
-
+=#
 
 """   code_to_include_param_jl( path_to_search )
 

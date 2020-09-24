@@ -29,7 +29,8 @@ include("cs_algs.jl")
 # export searchsortednearest
 
 include("files.jl")
-export make_manifest, code_to_include_param_jl
+export read_data_paths, code_to_include_param_jl
+#export make_manifest
 
 include("pipeline.jl")
 using .Pipeline

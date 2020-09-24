@@ -4,6 +4,7 @@ using Test
 @testset "Utility functions that don't use package's types." begin
     include("physics.jl")
     include("cs_algs.jl")
+    include("files.jl")
 end
 
 @testset "Utility functions for RvSpecMLBase's types" begin

@@ -1,5 +1,4 @@
 # Configuration files
-data_paths.jl
 
 # Julia
 *.jl.*.cov

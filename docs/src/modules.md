@@ -12,12 +12,6 @@ Modules = [RvSpectMLBase ]
 Order = [:module]
 ```
 
-## Interpolation Algorithms
-```@autodocs
-Modules = [RvSpectML.LinearInterpolation ]  
-Order = [:module]
-```
-
 ## Instrument-specific Modules
 ```@autodocs
 Modules = [ RvSpectMLBase.TheoreticalInstrument  ]
