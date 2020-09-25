@@ -12,7 +12,10 @@ using Test
     @test_nowarn make_orders_into_chunks(spectrum, orders_to_use=1:5, pixels_to_use=fill(20:80,5) )
 
     df = DataFrame(:lambda_lo=>[5501], :lambda_hi=>[5505])
-    @test_nowarn make_chunk_list(spectrum, df)  
+    @test_nowarn make_chunk_list(spectrum, df)
     cl = make_chunk_list(spectrum, df)
+    num_obs = 3
+    times = sort(rand(num_obs))
 
+    @test_nowarn ChunkListTimeseries(times, [cl, cl, cl]) 
 end
