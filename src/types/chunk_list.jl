@@ -55,10 +55,11 @@ struct ChunkListTimeseries{ TT<:Real, AT<:AbstractArray{TT,1}, CLT<:AbstractChun
     metadata::AVMT
 end
 
-function ChunkListTimeseries(times::AT, clt::ACLT; inst::InstT = Generic1D(),
+function ChunkListTimeseries(times::AT, clt::ACLT; inst::InstT = TheoreticalInstrument1D(),
             metadata::AbstractVector{MetadataT} = fill(MetadataT,length(times)) ) where {
                 TT<:Real, AT<:AbstractArray{TT,1}, CLT<:AbstractChunkList, ACLT<:AbstractArray{CLT,1},  InstT<:AbstractInstrument, AVMT<:AbstractVector{MetadataT} }
-    ChunkListTimeseries{eltype(times),typeof(times),eltype(clt),typeof(clt),typeof(inst),typeof(metadata)}(times,clt,inst,metadata)
+    #ChunkListTimeseries{eltype(times),typeof(times),eltype(clt),typeof(clt),typeof(inst),typeof(metadata)}(times,clt,inst,metadata)
+    ChunkListTimeseries(times,clt,inst,metadata)
 end
 
 #=
