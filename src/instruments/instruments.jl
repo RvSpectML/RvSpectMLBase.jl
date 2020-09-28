@@ -29,9 +29,6 @@ include("param.jl")
 For each instrument/data file type, users need to create a sub-type of either AbstractInstrument2D or AbstractInstrument1D and
 to implement the functions in neid/traits.jl for each instrument trait.
 =#
-function get_inst_module end
-#function filter_line_list end
-#function find_worst_telluric_in_each_chunk end
 
 include("theory/theory.jl")
 import .TheoreticalInstrument: TheoreticalInstrument1D, TheoreticalInstrument2D, AnyTheoreticalInstrument
