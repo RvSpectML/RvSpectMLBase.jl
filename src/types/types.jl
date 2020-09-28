@@ -16,11 +16,11 @@ export AbstractChunkList, ChunkList
 export AbstractChunkListTimeseries, ChunkListTimeseries
 export length, num_chunks, num_times
 
-#=
-# WARNING: Still experimental
 include("spectra_timeseries_common_wavelengths.jl")
 export AbstractSpectralTimeSeriesCommonWavelengths
 export SpectralTimeSeriesCommonWavelengths
+#=
+# WARNING: Still experimental
 #export make_vec_metadata_from_spectral_timeseries
 export make_spectral_time_series_common_wavelengths_with_selected_times
 =#
