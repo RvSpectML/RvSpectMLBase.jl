@@ -36,7 +36,7 @@ using Test
             @test min_pixel_in_order(n2) == 1
             @test max_pixel_in_order(n2) == num_pixels
             @test first(pixels_all(n2)) == min_pixel_in_order(n2)
-            @test last(pixels_all(n2)) == max_pixel_in_order(n2)
+            @test last(pixels_all(n2)) == max_pixel_in_order(n2)*(max_order(n2)-min_order(n2)+1)
             @test default_ccf_mask_v_width(n2) > 0
             @test get_inst_module(n2) == TheoreticalInstrument
     end

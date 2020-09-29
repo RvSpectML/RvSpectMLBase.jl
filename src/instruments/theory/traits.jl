@@ -23,6 +23,8 @@ max_pixel_in_order(::TheoreticalInstrument1D) = 8192
 
 min_order(::TheoreticalInstrument2D) = 1
 max_order(inst::TheoreticalInstrument2D) = length(inst.λ_min)
+min_pixel(::TheoreticalInstrument2D) = 1
+max_pixel(inst::TheoreticalInstrument2D) = inst.pixels_per_order*length(inst.λ_min)
 min_pixel_in_order(::TheoreticalInstrument2D) = 1
 max_pixel_in_order(inst::TheoreticalInstrument2D) = inst.pixels_per_order
 

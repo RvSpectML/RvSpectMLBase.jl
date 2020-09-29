@@ -65,7 +65,7 @@ orders_all(inst::AbstractInstrument2D) = min_order(inst):max_order(inst)
 """ Returns range of all allowable pixels for the specified instrument"""
 function pixels_all end
 
-pixels_all(inst::AbstractInstrument2D) = min_pixels_in_order(inst):max_pixel_in_order(inst)
+pixels_all(inst::AbstractInstrument2D) = min_pixel(inst):max_pixel(inst)
 pixels_all(inst::AbstractInstrument1D) = min_pixel(inst):max_pixel(inst)
 
 """ Returns maximum number of pixels in a spectrum for the specified instrument"""
