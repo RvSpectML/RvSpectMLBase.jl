@@ -1,7 +1,7 @@
 ```@meta
 CurrentModule = RvSpectMLBase
 ```
-# RvSpectML Modules
+# RvSpectMLBase Modules
 
 ```@contents
 Pages = ["modules.md"]

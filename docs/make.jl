@@ -17,6 +17,7 @@ makedocs(;
             "Overview" => "contents.md",
             "Modules" => "modules.md",
             "Functions" => "functions.md",
+            "Instrument-Specific Functions" => "abstract_functions.md",
             "Types" => "types.md"
             ],
         "Internals" => "internals.md",

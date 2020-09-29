@@ -32,7 +32,7 @@ Public = false
 Order = [ :function]
 ```
 
-## Other
+### Other
 ```@autodocs
 Modules = [RvSpectMLBase.Pipeline  ]
 Public = false
@@ -61,7 +61,7 @@ Modules = [ RvSpectMLBase.TheoreticalInstrument  ]
 Public = false
 Order = [:type ]
 ```
-## Other
+### Other
 ```@autodocs
 Modules = [RvSpectMLBase.Pipeline  ]
 Public = false

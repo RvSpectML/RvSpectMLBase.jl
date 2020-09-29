@@ -1,7 +1,7 @@
 ```@meta
 CurrentModule = RvSpectMLBase
 ```
-# Functions Exported by RvSpectML
+# Functions Exported by RvSpectMLBase
 
 ```@contents
 Pages = ["functions.md"]

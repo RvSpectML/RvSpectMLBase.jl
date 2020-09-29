@@ -79,6 +79,7 @@ Returns the line width (units of λ) for specified fractional line depth (defaul
 Assumes continuum is the maximum flux provided.
 """
 function calc_line_width(λ::AbstractArray{T1,1}, flux::AbstractArray{T2,1}; frac_depth::Real = 0.5 ) where { T1<:Real, T2<:Real }
+   @assert length(λ) == length(flux)
    @assert 0.05 <= frac_depth <= 0.99
    idx_min_flux = argmin(flux)
    min_flux = flux[idx_min_flux]
@@ -86,11 +87,11 @@ function calc_line_width(λ::AbstractArray{T1,1}, flux::AbstractArray{T2,1}; fra
    depth = 1.0 - min_flux/continuum
    target_flux = continuum*(1-frac_depth*depth)
    idxhi = idx_min_flux-1+searchsortedfirst(view(flux,idx_min_flux:length(flux)), target_flux)
-   if !(min_flux<=idxhi<=length(flux))   idx = length(flux) end
+   if !(min_flux<=idxhi<=length(flux))   idxhi = length(flux) end
    idxlo = idxhi-1
    λ_hi = RvSpectMLBase.interp_linear(x1=flux[idxlo],x2=flux[idxhi],y1=λ[idxlo],y2=λ[idxhi],xpred=target_flux)
    idxlo = idx_min_flux+1-searchsortedfirst(view(flux,idx_min_flux:-1:1), target_flux )
-   if !(1<=idxlo<=min_flux)   idx = 1 end
+   if !(1<=idxlo<=min_flux)   idxlo = 1 end
    idxhi = idxlo+1
    λ_lo = RvSpectMLBase.interp_linear(x1=flux[idxlo],x2=flux[idxhi],y1=λ[idxlo],y2=λ[idxhi],xpred=target_flux)
    width = λ_hi-λ_lo

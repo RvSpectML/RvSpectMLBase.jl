@@ -20,6 +20,7 @@ Filter = t -> isabstracttype(t)
 Modules = [ RvSpectMLBase ]
 Private = false
 Order = [:type]
+Filter = t -> !isabstracttype(t)
 ```
 
 ## Instrument specific
