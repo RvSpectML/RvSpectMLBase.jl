@@ -8,8 +8,7 @@ Created: August 2020
 Contact: https://github.com/eford/
 """
 
-""" make_orders_into_chunks
-
+""" `make_orders_into_chunks`
 Return a ChunkList with a region of spectrum from each order in orders_to_use.
 # Arguments
 - spectra<:AbstractSpectra
@@ -58,7 +57,7 @@ function make_orders_into_chunks(spectra::AS;
 end
 =#
 
-""" make_grid_for_chunk
+""" `make_grid_for_chunk`
 Create a range with equal spacing between points with end points set based on union of all chunks in timeseries.
 # Arguments:
 - timeseries: ChunkListTimeseries
@@ -102,7 +101,8 @@ function make_grid_for_chunk(timeseries::ACLT, c::Integer; oversample_factor::Re
     end
 end
 
-""" Return a ChunkList of best regions of spectrum with lines in line_line.
+""" `make_chunk_list( spectra, line_list)`
+Return a ChunkList of best regions of spectrum with lines in line_line.
     line_list is a DataFrame containing :lambda_lo and :lambda_hi.
     Pads edges by Δ.
 """

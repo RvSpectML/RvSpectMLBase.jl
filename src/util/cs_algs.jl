@@ -6,8 +6,8 @@ Contact: https://github.com/eford/
 """
 
 """
-   searchsortednearest(a<:AbstractVector, x::Real; assume_sorted = false )
-   searchsortednearest(a<:AbstractVector, x<:AbstractVector; assume_sorted = false )
+   `searchsortednearest(a<:AbstractVector, x::Real; assume_sorted = false )`
+   `searchsortednearest(a<:AbstractVector, x<:AbstractVector; assume_sorted = false )`
 
    Find the index of vector a where the value of a is closest to x.
    All vectors are assumed to already be sorted.
@@ -80,7 +80,7 @@ end
 end
 
 
-""" findargminmax(a)
+""" `findargminmax(a)`
 Return (argmin, min, argmax, max)
 Adapapted from https://github.com/JuliaLang/julia/blob/697e782ab86bfcdd7fd15550241fe162c51d9f98/base/array.jl#L2191
 """
@@ -116,7 +116,7 @@ function _findminmax(a, ::Colon)
     return (argmin=argmin, min=valmin, argmax=argmax, max=valmax)
 end
 
-""" interp_linear(;x1::T1,x2::T1,y1::T2,y2::T2,xpred::T1)
+""" `interp_linear(;x1,x2,y1,y2,xpred)
 Return result of simple linear interpolant at xpred.
 Does not test that xpred is between x1 and x2.
 """

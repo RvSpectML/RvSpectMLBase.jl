@@ -79,6 +79,8 @@ export default_ccf_mask_v_width
 #include("io.jl")
 #export make_manifest, read_metadata, read_data, read_solar_data
 
+include("util.jl")
+
 include("gen_data.jl")
 export generate_spectrum, generate_spectra_timeseries
 

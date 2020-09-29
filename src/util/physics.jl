@@ -25,7 +25,7 @@ end
 const default_line_width_mps = predict_intrinsic_stellar_line_width(teff_solar,v_rot=vrot_solar)  # m/s
 
 """
-   calc_doppler_factor(rv; v_perp)
+   `calc_doppler_factor(rv; v_perp)`
 
 Return the Doppler boost factor (non-relativistic) for rv in m/s.
 """
@@ -36,7 +36,7 @@ calc_doppler_factor(rv::Real, v_perp::Real) = (one(rv) + rv/speed_of_light_mps)/
 
 
 """
-   absorption_line(x; mid, width, depth)
+   `absorption_line(x; mid, width, depth)`
 
 Return a Gaussian absorption line profile evaluated at x.
 """
@@ -46,7 +46,7 @@ end
 
 
 default_Δλ_over_λ_threshold_check_if_line_match = 2.25e-5
-""" check_if_line_match ( λ, list ; threshold )
+""" `check_if_line_match ( λ, list ; threshold )`
 Return true if list contains a wavelength differing from λ by no more than threshold (in units of Δλ/λ)
 """
 function check_if_line_match( λ::Real, list::AbstractVector{T} ; threshold::Real = default_Δλ_over_λ_threshold_check_if_line_match ) where { T<:Real }

@@ -7,8 +7,14 @@ CurrentModule = RvSpectMLBase
 Pages = ["abstract_functions.md"]
 Depth = 2
 ```
+
+!!! todo
+    Figure out what Documenter can't find the docstrings for these.
+    They're in src/instruments/common.jl.
+
 ## Instrument-specific traits
 ```@docs
+Private = true
 min_order
 max_order
 orders_all

@@ -9,8 +9,8 @@ Contact: https://github.com/eford/
 import NaNMath
 
 """
-    apply_doppler_boost!(spectrum, doppler_factor) -> typeof(spectrum)
-    apply_doppler_boost!(spectra, df) -> typeof(spectra)
+    `apply_doppler_boost!(spectrum, doppler_factor)` -> `typeof(spectrum)`
+    `apply_doppler_boost!(spectra, df)` -> `typeof(spectra)`
 
 Apply Doppler boost to spectra's λ's and update its metadata[:doppler_factor], so it will know how to undo the transform.
 # Arguments:
