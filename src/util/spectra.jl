@@ -102,7 +102,6 @@ function make_vec_metadata_from_spectral_timeseries(spec_arr::AA) where { AS<:Ab
 end
 
 function discard_large_metadata(data::Union{ACLT,AS, AAS}) where { ACLT<:AbstractChunkListTimeseries, AS<:AbstractSpectra, AAS<:AbstractArray{AS} }
-    # TODO: Figure out how to dispatch before knowing what insruments have been imported
     if typeof(data.inst) <: AnyTheoreticalInstrument
         # Nothing to do
     else
