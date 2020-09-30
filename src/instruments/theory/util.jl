@@ -1,4 +1,4 @@
-import ..RvSpectMLBase: get_λ_range
+import ..RvSpectMLBase.InstrumentsCommon: get_λ_range
 
 function get_λ_range(data::ST) where { T1<:Real, T2<:Real, T3<:Real, A1<:AbstractArray{T1,2}, A2<:AbstractArray{T2,2}, A3<:AbstractArray{T3,2},
                                        IT<:AnyTheoreticalInstrument, ST<:Spectra2DBasic{T1,T2,T3,A1,A2,A3,IT} }

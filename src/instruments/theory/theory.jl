@@ -10,6 +10,7 @@ Module providing types and traits and customized functions for a generic theoret
 """
 module TheoreticalInstrument
 using ..RvSpectMLBase
+using ..RvSpectMLBase.InstrumentsCommon
 #import ..RvSpectML: AbstractInstrument, AbstractInstrument1D, AbstractInstrument2D
 using DataFrames # , FITSIO
 

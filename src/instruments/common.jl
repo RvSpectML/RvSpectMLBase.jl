@@ -77,7 +77,9 @@ max_pixels_in_spectra(inst::AbstractInstrument2D) = (max_order(inst)-min_order(i
 """ Returns maximum number of pixels in a chunk from the specified instrument"""
 min_pixels_in_chunk(inst::AbstractInstrument) = 6
 
+function make_clean_line_list_from_tellurics end
+#export make_clean_line_list_from_tellurics
 
-export orders_to_use_default
-export filter_line_list, get_inst_module, default_ccf_mask_v_width
-export orders_all, pixels_all, max_pixels_in_spectra, min_pixels_in_chunk
+#export orders_to_use_default
+#export filter_line_list, get_inst_module, default_ccf_mask_v_width
+#export orders_all, pixels_all, max_pixels_in_spectra, min_pixels_in_chunk

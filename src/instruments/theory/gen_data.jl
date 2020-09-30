@@ -48,7 +48,7 @@ function generate_spectra_timeseries(times::AbstractArray, line_list::DataFrame,
 end
 
 
-""" `demo_generate_spectrum_line`
+""" `demo_generate_spectrum_line( inst )`
 Generate spectrum with one line for testing purposes.
 """
 function demo_generate_spectrum_line(inst::AnyTheoreticalInstrument)

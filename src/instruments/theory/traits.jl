@@ -6,8 +6,8 @@ Created: August 2020
 
 """ Delegates loading of code specifying types essential to the package.  """
 
-import ..RvSpectMLBase: min_pixel, max_pixel, min_order, max_order, min_pixel_in_order, max_pixel_in_order
-import ..RvSpectMLBase: orders_to_use_default, min_col_default, max_col_default
+import ..RvSpectMLBase.InstrumentsCommon: min_pixel, max_pixel, min_order, max_order, min_pixel_in_order, max_pixel_in_order
+import ..RvSpectMLBase.InstrumentsCommon: orders_to_use_default, min_col_default, max_col_default
 
 min_pixel(::TheoreticalInstrument1D) = 1
 max_pixel(::TheoreticalInstrument1D) = 128*8192
@@ -36,11 +36,11 @@ max_col_default(inst::TheoreticalInstrument2D, ord::Integer) = max_pixel_in_orde
 #metadata_symbols_default(::AnyD) = Symbol[:bjd, :target, :ssbz]
 #metadata_strings_default(::AnyD) = String["OBSJD", "SKY-OBJ", "SSBZ000"]
 
-import ..RvSpectMLBase: default_ccf_mask_v_width
+import ..RvSpectMLBase.InstrumentsCommon: default_ccf_mask_v_width
 default_ccf_mask_v_width(::AnyTheoreticalInstrument) = 500.0  #
 export default_ccf_mask_v_width
 
-import ..RvSpectMLBase: get_inst_module
+import ..RvSpectMLBase.InstrumentsCommon: get_inst_module
 get_inst_module(::AnyTheoreticalInstrument) = TheoreticalInstrument
 export get_inst_module
 

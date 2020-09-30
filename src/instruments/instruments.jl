@@ -5,6 +5,9 @@ typically the file I/O and pre-processing, so data ends up in a common format.
 src/instruments/common.jl provides routines that can be shared by instruments.
 """
 
+module InstrumentsCommon
+
+using ..RvSpectMLBase
 
 include("common.jl")   # Mostly trait functions to be specialized by instruments
 
@@ -24,6 +27,17 @@ include("common.jl")   # Mostly trait functions to be specialized by instruments
 #export merge_chunks
 
 include("param.jl")
+
+export min_order, max_order, min_pixel_in_order, max_pixel_in_order
+export orders_to_use_default, min_col_default, max_col_default
+export orders_all, pixels_all, max_pixels_in_spectra       # generic implementations avaliable
+export metadata_symbols_default, metadata_strings_default  # need to specialize
+export default_ccf_mask_v_width
+export get_inst_module
+
+end # module InstrumentsCommon
+
+# Now returning to module EchelleInstrments
 
 #=
 For each instrument/data file type, users need to create a sub-type of either AbstractInstrument2D or AbstractInstrument1D and
@@ -45,35 +59,22 @@ import .TheoreticalInstrument: get_inst_module
 =#
 
 #=
-include("neid/neid.jl")
-import .NEID: NEID1D, NEID2D, AnyNEID
-import .NEID: get_inst_module, filter_line_list, find_worst_telluric_in_each_chunk
-export NEID, NEID1D, NEID2D, AnyNEID
-
-include("expres/expres.jl")
-import .EXPRES: EXPRES1D, EXPRES2D, AnyEXPRES, get_inst_module
-import .EXPRES: get_inst_module, filter_line_list, find_worst_telluric_in_each_chunk
-export EXPRES, EXPRES1D, EXPRES2D, AnyEXPRES
-
-# TODO: Add more instruments:  HARPS-N, HPF, etc.
-include("harps-n/harps-n.jl")
-export HARPSN, HARPSN1D, HARPSN2D, AnyHARPSN
-import .HARPSN: HARPSN1D, HARPSN2D, AnyHARPSN, get_inst_module
-#import .HARPSN: get_inst_module, filter_line_list, find_worst_telluric_in_each_chunk
-=#
-
-# using .TheoreticalInstrument, .NEID, .EXPRES, .HARPSN
-
-
-#=
 include("tellurics.jl")
 export find_worst_telluric_in_each_chunk, make_clean_line_list_from_tellurics_expres
 export filter_line_list
 =#
+
+import .InstrumentsCommon: pixels_all, min_pixel, max_pixel, max_pixels_in_spectra, min_col_default, max_col_default
+import .InstrumentsCommon: orders_all, min_order, max_order, orders_to_use_default
+import .InstrumentsCommon: min_pixel_in_order, max_pixel_in_order, min_pixels_in_chunk
+import .InstrumentsCommon: metadata_symbols_default, metadata_strings_default
+import .InstrumentsCommon: default_ccf_mask_v_width
+import .InstrumentsCommon: make_clean_line_list_from_tellurics
 
 export min_order, max_order, min_pixel_in_order, max_pixel_in_order
 export orders_to_use_default, min_col_default, max_col_default
 export orders_all, pixels_all, max_pixels_in_spectra       # generic implementations avaliable
 export metadata_symbols_default, metadata_strings_default  # need to specialize
 export default_ccf_mask_v_width
+export make_clean_line_list_from_tellurics
 export get_inst_module

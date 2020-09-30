@@ -1,5 +1,5 @@
 ```@meta
-CurrentModule = RvSpectMLBase
+CurrentModule = RvSpectMLBase.InstrumentsCommon
 ```
 # Functions declared in RvSpectMLBase and specialized for each instrument
 
@@ -14,7 +14,6 @@ Depth = 2
 
 ## Instrument-specific traits
 ```@docs
-Private = true
 min_order
 max_order
 orders_all
