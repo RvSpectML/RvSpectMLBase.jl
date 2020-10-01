@@ -15,6 +15,13 @@ Private = false
 Order = [:function ]
 ```
 
+## Functions to be Provided for Each Instrument
+```@autodocs
+Modules = [RvSpectMLBase.InstrumentsCommon ]
+Private = false
+Order = [:function]
+```
+
 ## Example Instrument
 ```@autodocs
 Modules = [RvSpectMLBase.TheoreticalInstrument  ]

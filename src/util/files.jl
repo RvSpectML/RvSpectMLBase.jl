@@ -5,7 +5,7 @@ Author: Eric Ford
 Created: Sept 2020
 """
 
-default_paths_to_search = [pwd(),"examples",joinpath(pkgdir(RvSpectMLBase),"examples"),"/gpfs/group/ebf11/default/ebf11/expres/inputs"]
+default_paths_to_search = [".",joinpath(".","examples"),pwd(),joinpath(pwd(),"examples"),"/gpfs/group/ebf11/default/ebf11/expres/inputs"]
 
 
 """ `read_data_paths( ; path_to_search )`
