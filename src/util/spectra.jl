@@ -9,17 +9,19 @@ Contact: https://github.com/eford/
 import NaNMath
 
 """
-    `apply_doppler_boost!(spectrum, doppler_factor)` -> `typeof(spectrum)`
-    `apply_doppler_boost!(spectra, df)` -> `typeof(spectra)`
+    `apply_doppler_boost!(spectrum, doppler_factor)` 
+    `apply_doppler_boost!(spectra, df)`
 
 Apply Doppler boost to spectra's λ's and update its metadata[:doppler_factor], so it will know how to undo the transform.
 # Arguments:
-* `spectrum::AbstractSpectra`: spectrum to be boosted
-* `doppler_factor::Real`: boost factor (1 = noop)
-or
-* `spectra::AbstractArray{<:AbstractSpectra}`: spectra to be boosted
-* `df::DataFrame`: provides `:drift` and `:ssb_rv` (in m/s) for calculating the Doppler boost for each spectrum
+- `spectrum::AbstractSpectra`: spectrum to be boosted
+- `doppler_factor`: boost factor (1 = noop)
 
+or:
+- `spectra`: spectra to be boosted
+- `df`: DataFrame provides `:drift` and `:ssb_rv` (in m/s) for calculating the Doppler boost for each spectrum
+
+Returns spectrum/spectra with λ boosted
 TODO: Improve documentation formatting.  This can serve as a template.
 """
 function apply_doppler_boost! end

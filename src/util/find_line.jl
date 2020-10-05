@@ -6,7 +6,7 @@ Created: August 2020
 Contact: https://github.com/eford/
 """
 
-""" Return list of all orders that contain a pixel with wavelength lambda """
+""" Return list of all order indices that contain a pixel with wavelength lambda """
 function find_orders_with_line(goal::Real,lambda::AbstractArray{T,2}) where T<:Real
    order_min(i) = lambda[1,i]
    order_max(i) = lambda[end,i]
@@ -20,14 +20,14 @@ function find_orders_with_line(goal::Real,lambda::AbstractArray{T,2}) where T<:R
 end
 
 
-""" Return list of all orders that contain all pixels with wavelengths between goal_lo and goal_hi """
+""" Return list of all order indices that contain all pixels with wavelengths between goal_lo and goal_hi """
 function find_orders_with_line(goal_lo::Real,goal_hi::Real,lambda::AbstractArray{T,2}) where T<:Real
    order_min(i) = lambda[1,i]
    order_max(i) = lambda[end,i]
    findall(i->order_min(i)<=goal_lo && goal_hi<=order_max(i), 1:size(lambda,2) )
 end
 
-""" Return list of all orders that include any wavelengths between goal_lo and goal_hi """
+""" Return list of all order indices that include any wavelengths between goal_lo and goal_hi """
 function find_orders_in_range(goal_lo::Real,goal_hi::Real,lambda::AbstractArray{T,2}) where T<:Real
    order_min(i) = lambda[1,i]
    order_max(i) = lambda[end,i]
@@ -59,7 +59,7 @@ function find_cols_to_fit(wavelengths::AbstractArray{T,1}, line_lo::Real, line_h
     return first:last
 end
 
-""" Return list of (pixels, order) pairs that contain pixels with desireed wavelengths.
+""" Return list of (pixels, order_idx) pairs that contain pixels with desireed wavelengths.
     Excludes locations that contain any pixels with var == NaN.
 """
 function findall_line end
@@ -140,7 +140,7 @@ function findall_line(goal_lo::Real,goal_hi::Real,spectra::AS; Δ::Real = Δλo�
     findall_line(goal_lo,goal_hi,spectra.λ,spectra.var, Δ=Δ)
 end
 
-""" Return (pixels, order) pair that contain "best" region of spectra, based on highest SNR. """
+""" Return (pixels, order_idx) pair that contain "best" region of spectra, based on highest SNR. """
 function find_line_best end
 
 function find_line_best(goal::Real,lambda::AbstractArray{T1,2},flux::AbstractArray{T2,2},var::AbstractArray{T3,2}; Δ::Real = Δλoλ_fit_line_default) where {T1<:Real, T2<:Real, T3<:Real}
