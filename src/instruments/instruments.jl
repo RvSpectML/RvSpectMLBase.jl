@@ -69,7 +69,7 @@ import .InstrumentsCommon: orders_all, min_order, max_order, orders_to_use_defau
 import .InstrumentsCommon: min_pixel_in_order, max_pixel_in_order, min_pixels_in_chunk
 import .InstrumentsCommon: metadata_symbols_default, metadata_strings_default
 import .InstrumentsCommon: default_ccf_mask_v_width
-import .InstrumentsCommon: make_clean_line_list_from_tellurics
+import .InstrumentsCommon: make_clean_line_list_from_tellurics, choose_obs_idx_for_init_guess
 
 export min_order, max_order, min_pixel_in_order, max_pixel_in_order
 export orders_to_use_default, min_col_default, max_col_default
@@ -77,4 +77,5 @@ export orders_all, pixels_all, max_pixels_in_spectra       # generic implementat
 export metadata_symbols_default, metadata_strings_default  # need to specialize
 export default_ccf_mask_v_width
 export make_clean_line_list_from_tellurics
+export choose_obs_idx_for_init_guess
 export get_inst_module
