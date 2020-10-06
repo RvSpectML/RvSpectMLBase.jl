@@ -32,9 +32,9 @@ orders_to_use_default(inst::TheoreticalInstrument2D) = min_order(inst):max_order
 min_col_default(::TheoreticalInstrument2D, ord::Integer) = 1
 max_col_default(inst::TheoreticalInstrument2D, ord::Integer) = max_pixel_in_order(inst)
 
-#import ..RvSpectMLBase: metadata_symbols_default, metadata_strings_default
-#metadata_symbols_default(::AnyD) = Symbol[:bjd, :target, :ssbz]
-#metadata_strings_default(::AnyD) = String["OBSJD", "SKY-OBJ", "SSBZ000"]
+import ..RvSpectMLBase.InstrumentsCommon: metadata_symbols_default, metadata_strings_default
+metadata_symbols_default(::AnyTheoreticalInstrument) = Symbol[] #:bjd, :target, :ssbz]
+metadata_strings_default(::AnyTheoreticalInstrument) = String[] #"OBSJD", "SKY-OBJ", "SSBZ000"]
 
 import ..RvSpectMLBase.InstrumentsCommon: default_ccf_mask_v_width
 default_ccf_mask_v_width(::AnyTheoreticalInstrument) = 500.0  #

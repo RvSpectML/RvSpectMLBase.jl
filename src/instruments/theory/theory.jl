@@ -41,10 +41,7 @@ end
 λ_min(x::TheoreticalInstrument1D) = x.λ_min
 λ_max(x::TheoreticalInstrument1D) = x.λ_max
 
-#=  TODO: Write once figure out 1d case first
-struct TheoreticalInstrument2D <: AbstractInstrument2D
-end
-=#
+
 
 """ Trait for a 2D spectra from a theoretical instrument """
 struct TheoreticalInstrument2D <: AbstractInstrument2D
@@ -78,7 +75,7 @@ export default_ccf_mask_v_width
 
 # Need to think about what to do for IO, if anything.
 #include("io.jl")
-#export make_manifest, read_metadata, read_data, read_solar_data
+#export make_manifest, read_metadata, read_data
 
 include("util.jl")
 
