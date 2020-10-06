@@ -9,6 +9,11 @@ Contact: https://github.com/eford/
 const speed_of_light_mps = 299792458.0 # TODO: Update value
 const teff_solar = 5780.0
 const vrot_solar = 1800.0
+const earth_eccentricity = 0.0167
+const max_bc_earth_orbit_circular = 29795.9  #  2pu AU / year in m/s
+const max_bc_earth_orbit = max_bc_earth_orbit_circular * (1+earth_eccentricity)
+const max_bc_earth_rotation = 463.8  # 2pi R_Earth / day in m/s
+const max_bc = max_bc_earth_orbit + max_bc_earth_rotation
 
 """
 Estimate line width based on stellar Teff (K) and optionally v_rot (m/s).  Output in m/s.
