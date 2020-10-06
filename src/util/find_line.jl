@@ -247,3 +247,35 @@ end
 function find_pixels_for_line_in_chunklist( chunk_list::AbstractChunkList, λ_min::Real, λ_max::Real, chunk_id::Integer)
   return (chunk_idx=chunk_id, pixels=find_pixels_for_line_in_chunk(chunk_list.data[chunk_id], λ_min, λ_max) )
 end
+
+
+
+
+
+""" `is_in_wavelength_range_list(λ; list )`
+Return true if λ is between lambda_lo and lambda_hi for any row in list
+"""
+function is_in_wavelength_range_list(λ::Real; list::DataFrame  )
+    @assert hasproperty(list, :lambda_lo)
+    @assert hasproperty(list, :lambda_hi)
+    idx =  searchsortedfirst(list[:,:lambda_hi], λ)
+    return idx>size(list,1) || !(list[idx,:lambda_lo]<=λ<=list[idx,:lambda_hi]) ?  false : true
+end
+
+
+""" `is_in_wavelength_range_list(λ_lo, λ_hi; list )`
+Return true if there is overlap between (λ_lo, λ_hi) and lambda_lo and lambda_hi for any row in list
+# TODO: test
+"""
+function is_in_wavelength_range_list(λ_lo::Real, λ_hi::Real; list::DataFrame  )
+    @assert λ_lo < λ_hi
+    @assert hasproperty(list, :lambda_lo)
+    @assert hasproperty(list, :lambda_hi)
+    idx =  searchsortedfirst(list[:,:lambda_hi], λ_lo)
+    if idx>size(list,1)    return false  end
+    if λ_lo<=list[idx,:lambda_hi] &&  λ_hi>=list[idx,:lambda_lo]
+        return true
+    else
+        return false
+    end
+end
