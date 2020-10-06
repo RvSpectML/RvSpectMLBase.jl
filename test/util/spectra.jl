@@ -19,7 +19,7 @@ end
     @test get_λ_range(spec).max ≈ 6000
 
     df = DataFrame(:lambda_lo=>[5501], :lambda_hi=>[5505])
-    cl = make_chunk_list(spec, df)
+    cl = make_chunk_list_around_lines(spec, df)
     @test_nowarn calc_normalization(cl)
     norm = calc_normalization(cl)
     @test_nowarn normalize_spectrum!(spec,norm )

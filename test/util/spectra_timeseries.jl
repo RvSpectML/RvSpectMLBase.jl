@@ -15,8 +15,8 @@ using Test
     @test_nowarn TheoreticalInstrument.generate_spectra_timeseries(times,line_list,inst, rvs)
     spectra = TheoreticalInstrument.generate_spectra_timeseries(times,line_list,inst, rvs)
     chunk_list = DataFrame(:lambda_lo=>[5501], :lambda_hi=>[5505])
-    @test_nowarn make_chunk_list_timeseries(spectra,chunk_list)
-    clt = make_chunk_list_timeseries(spectra,chunk_list)
+    @test_nowarn make_chunk_list_timeseries_around_lines(spectra,chunk_list)
+    clt = make_chunk_list_timeseries_around_lines(spectra,chunk_list)
     @test num_times(clt) == num_obs
     @test num_chunks(clt) == 1
     @test_nowarn normalize_spectra!(clt,spectra )

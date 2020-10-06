@@ -12,7 +12,8 @@ include("find_line.jl")
 # intended for internal use, so functions not exported
 
 include("chunks.jl")
-export make_orders_into_chunks, make_grid_for_chunk, make_chunk_list, make_chunk_list_timeseries, extract_chunk_list_timeseries_for_order
+export make_orders_into_chunks, make_grid_for_chunk,  extract_chunk_list_timeseries_for_order
+export make_chunk_list_around_lines, make_chunk_list_timeseries_around_lines, make_chunk_list_tellric_free, make_chunk_list_timeseries_tellric_free
 export make_order_list_timeseries
 export find_orders_with_line, find_orders_in_range
 export findall_line, find_line_best
