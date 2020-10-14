@@ -15,7 +15,7 @@ function make_chunk_list_from_loc_df(spectra::AS, inst::AbstractInstrument2D, df
 
 end
 
-function make_chunk_list_timeseries_telluric_free(spectra::AS, df_λ_good::DataFrame; verbose::Bool = false ) where {ST<:AbstractSpectra, AS<:AbstractArray{ST,1} }
+function make_chunk_list_timeseries_telluric_free(spectra::AS, df_λ_good::DataFrame; min_pixels_in_chunk::Integer = 250, verbose::Bool = false ) where {ST<:AbstractSpectra, AS<:AbstractArray{ST,1} }
     max_Δv_match_chunk = 2*max_bc
     inst = first(spectra).inst
     times = map(s->s.metadata[:bjd],spectra)
@@ -29,42 +29,71 @@ function make_chunk_list_timeseries_telluric_free(spectra::AS, df_λ_good::DataF
     λ_max_targets = map(ch_idx->median(map(obs_idx->maximum(time_series_of_chunk_lists[obs_idx][ch_idx].λ),obs_idx_min_num_chunks)),1:min_num_chunks)
     order_idx_targets = map(ch_idx->round(Int,median(map(obs_idx->time_series_of_chunk_lists[obs_idx][ch_idx].λ.indices[2],obs_idx_min_num_chunks))),
                                 1:min_num_chunks)
+    similarity_of_chunks = zeros(min_num_chunks)
+    similarity_chunk_idx = zeros(Int64,min_num_chunks)
     for obs_idx in 1:length(time_series_of_chunk_lists)
+        #=
         if length(time_series_of_chunk_lists[obs_idx].data) == min_num_chunks
             continue  # TODO: Technically should still check that they all match
         end
+        =#
         ch_perm_idx = zeros(Int64,min_num_chunks)
         for ch_idx in 1:min_num_chunks
             if verbose    println("# Trying to match ch_idx= ",ch_idx, " lmin= ", λ_min_targets[ch_idx], " lmax= ", λ_max_targets[ch_idx])   end
-            idx_order_match = findall(map(ch->time_series_of_chunk_lists[obs_idx][ch].λ.indices[2],1:length(time_series_of_chunk_lists[obs_idx].data)).==order_idx_targets[ch_idx])
+            idx_order_match = findall(map(ch->time_series_of_chunk_lists[obs_idx][ch].λ.indices[2], 1:length(time_series_of_chunk_lists[obs_idx].data)).==order_idx_targets[ch_idx])
             if verbose  &&  ch_idx >= 110
                 println("# idx_order_match= ", idx_order_match)
             end
 
             if !(length(idx_order_match) >= 1)   continue    end
-            for ch_idx2 in idx_order_match
+            # Find if any ch_idx2 is good match to ch_idx's wavelength range
+            similarity_of_chunks .= Inf
+            similarity_chunk_idx .= 0
+            for (i,ch_idx2) in enumerate(idx_order_match)
                 delta_λmax = maximum(time_series_of_chunk_lists[obs_idx][ch_idx2].λ)-λ_max_targets[ch_idx]
                 delta_λmin = minimum(time_series_of_chunk_lists[obs_idx][ch_idx2].λ)-λ_min_targets[ch_idx]
                 if verbose    && ch_idx >= 110
                     println("# ch_idx2 = ", ch_idx2, " dlmin= ", delta_λmin/λ_max_targets[ch_idx]*speed_of_light_mps, " dlmax= ", delta_λmax/λ_max_targets[ch_idx]*speed_of_light_mps)
                 end
 
-                if (abs(delta_λmax)/λ_max_targets[ch_idx]*speed_of_light_mps < max_Δv_match_chunk) &&
+                similarity_of_chunks[i] = ((abs(delta_λmax)/λ_max_targets[ch_idx]*speed_of_light_mps) / max_Δv_match_chunk)^2 +
+                                          ((abs(delta_λmin)/λ_max_targets[ch_idx]*speed_of_light_mps) / max_Δv_match_chunk)^2
+                similarity_chunk_idx[i] = ch_idx2
+                #= if (abs(delta_λmax)/λ_max_targets[ch_idx]*speed_of_light_mps < max_Δv_match_chunk) &&
                     (abs(delta_λmax)/λ_max_targets[ch_idx]*speed_of_light_mps < max_Δv_match_chunk)
                     ch_perm_idx[ch_idx] = ch_idx2
-                end
+                end =#
             end # for over ch_idx2 to match target
+
+            ch_idx2 = similarity_chunk_idx[findmin(similarity_of_chunks)[2]]
+            delta_λmax = maximum(time_series_of_chunk_lists[obs_idx][ch_idx2].λ)-λ_max_targets[ch_idx]
+            delta_λmin = minimum(time_series_of_chunk_lists[obs_idx][ch_idx2].λ)-λ_min_targets[ch_idx]
+            if (abs(delta_λmax)/λ_max_targets[ch_idx]*speed_of_light_mps < max_Δv_match_chunk) &&
+                (abs(delta_λmin)/λ_max_targets[ch_idx]*speed_of_light_mps < max_Δv_match_chunk)
+                ch_perm_idx[ch_idx] = ch_idx2
+            #= else
+                flush(stdout)
+                println("# obs_idx= ", obs_idx, " ch_idx= ",ch_idx, " ch_idx2= ",ch_idx2, " delta_λmax=",delta_λmax, " delta_λmin=",delta_λmin, " similarity_of_chunks=",similarity_of_chunks[ch_idx2])
+                flush(stdout)
+                =#
+            end
         end # for over ch_idx that is target
         if verbose    println("# obs_idx = ", obs_idx)   end
         if verbose    println("# ch_perm_idx = ",ch_perm_idx)   end
         @assert !any(ch_perm_idx.==0)
         if !all(ch_perm_idx.==1:length(ch_perm_idx))
             time_series_of_chunk_lists[obs_idx] = ChunkList( map(ch_idx-> time_series_of_chunk_lists[obs_idx].data[ch_idx],  ch_perm_idx),
-                                                            map(ch_idx-> time_series_of_chunk_lists[obs_idx].order[ch_idx], ch_perm_idx) )
+                                                             map(ch_idx-> time_series_of_chunk_lists[obs_idx].order[ch_idx], ch_perm_idx) )
         end
     end # for over obs_idx
+    min_pixels_in_chunk_in_any_obs = map(ch_idx->minimum(map(obs_idx->length(time_series_of_chunk_lists[obs_idx][ch_idx].λ),1:length(time_series_of_chunk_lists) )),1:length(first(time_series_of_chunk_lists)) )
+    idx_keep = findall(x->x>min_pixels_in_chunk,min_pixels_in_chunk_in_any_obs)
 
-    chunk_list_timeseries = ChunkListTimeseries(times, time_series_of_chunk_lists, inst=inst, metadata=metadata )
+    time_series_of_nonsmall_chunk_lists = map(obs_idx -> ChunkList( map(ch_idx-> time_series_of_chunk_lists[obs_idx].data[ch_idx],  idx_keep),
+                                                                    map(ch_idx-> time_series_of_chunk_lists[obs_idx].order[ch_idx], idx_keep) ), 1:length(time_series_of_chunk_lists) )
+
+    chunk_list_timeseries = ChunkListTimeseries(times, time_series_of_nonsmall_chunk_lists, inst=inst, metadata=metadata )
+    #chunk_list_timeseries = ChunkListTimeseries(times, time_series_of_chunk_lists, inst=inst, metadata=metadata )
 end
 
 
@@ -235,7 +264,7 @@ end
 function make_chunk_list_timeseries_around_lines(spectra::AS,line_list_df::DataFrame; rv_shift::Real = 0) where {ST<:AbstractSpectra, AS<:AbstractArray{ST,1} }
     times = map(s->s.metadata[:bjd],spectra)
     metadata = make_vec_metadata_from_spectral_timeseries(spectra)
-    time_series_of_chunk_lists = map(spec->RvSpectMLBase.make_chunk_list_around_lines(spec,line_list_df, rv_shift=rv_shift),spectra)
+    time_series_of_chunk_lists = map(spec->RvSpectMLBase.make_chunk_list_around_lines(spec,line_list_df, rv_shift=rv_shift), spectra)
     chunk_list_timeseries = ChunkListTimeseries(times, time_series_of_chunk_lists, inst=first(spectra).inst, metadata=metadata )
 end
 

@@ -80,7 +80,11 @@ min_pixels_in_chunk(inst::AbstractInstrument) = 6
 function make_clean_line_list_from_tellurics end
 #export make_clean_line_list_from_tellurics
 
-function choose_obs_idx_for_init_guess end
+function choose_obs_idx_for_init_guess(df::DataFrame, inst::AbstractInstrument)
+   @assert size(df,1) >= 1
+   @warn "Using first observation as reference, since choose_obs_idx_for_init_guess not specialized for instrument."
+   return 1
+end
 
 
 #export orders_to_use_default

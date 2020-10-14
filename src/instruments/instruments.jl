@@ -8,6 +8,7 @@ src/instruments/common.jl provides routines that can be shared by instruments.
 module InstrumentsCommon
 
 using ..RvSpectMLBase
+using DataFrames
 
 include("common.jl")   # Mostly trait functions to be specialized by instruments
 

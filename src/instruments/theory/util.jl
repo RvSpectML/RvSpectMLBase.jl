@@ -64,7 +64,7 @@ function calc_λs(inst::TheoreticalInstrument2D)
    return λ
 end
 
-function choose_obs_idx_for_init_guess(df::DataFrame, inst::TheoreticalInstrument2D)
+function choose_obs_idx_for_init_guess(df::DataFrame, inst::AnyTheoreticalInstrument)
    @assert size(df,1) >= 1
    return 1
 end

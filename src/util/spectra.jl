@@ -9,7 +9,7 @@ Contact: https://github.com/eford/
 import NaNMath
 
 """
-    `apply_doppler_boost!(spectrum, doppler_factor)` 
+    `apply_doppler_boost!(spectrum, doppler_factor)`
     `apply_doppler_boost!(spectra, df)`
 
 Apply Doppler boost to spectra's λ's and update its metadata[:doppler_factor], so it will know how to undo the transform.
@@ -50,7 +50,14 @@ function apply_doppler_boost!(spectra::AbstractArray{AS}, df::DataFrame ) where 
     map(x->apply_doppler_boost!(x[1],x[2]), zip(spectra,doppler_factor) );
 end
 
-"""  Calculate total SNR in (region of) spectra. """
+"""
+`calc_snr(flux, var)`
+`calc_snr(spectrum, pixels, order_idx)`
+
+Calculate total SNR in (region of) spectra.
+"""
+function calc_snr end
+
 function calc_snr(flux::AbstractArray{T1},var::AbstractArray{T2}) where {T1<:Real, T2<:Real}
     @assert size(flux) == size(var)
     sqrt(NaNMath.sum( flux.^2 ./ var))
@@ -58,6 +65,19 @@ end
 
 function calc_snr(flux::Real,var::Real)
     flux / sqrt(var)
+end
+
+function calc_snr(spectrum::ST, pixels::AR, order::Integer) where { ST<:AbstractSpectra2D, AR<:AbstractRange{Int64}, AA1<:AbstractArray{Int64,1} } #, AAR<:AbstractArray{AR,1} }
+    flux = view(spectrum.flux,pixels,order)
+    var = view(spectrum.var,pixels,order)
+    #=
+    #if all(isnan.(flux) .|| isnan.(var) )
+    if all( isnan.( flux.^2 ./ var ) )
+        println("# all NaNs in order = ", order, " pixels = ", pixels)
+        return 0
+    end
+    =#
+    calc_snr( view(spectrum.flux,pixels,order), view(spectrum.var,pixels,order) )
 end
 
 """ Normalize spectrum, multiplying fluxes by scale_fac. """
@@ -79,6 +99,17 @@ function normalize_spectra!(chunk_timeseries::ACLT, spectra::AS) where { ACLT<:A
         normalize_spectrum!(spectra[t], scale_fac)
     end
     return chunk_timeseries
+end
+
+""" Return instrument associated with spectrum """
+function get_inst(spectrum::AS) where { AS<:AbstractSpectra2D }
+    return spectrum.inst
+end
+
+""" Return instrument associated with first spectrum in array """
+function get_inst(spectra::AAS) where { AS<:AbstractSpectra2D, AAS<:AbstractVector{AS} }
+    @assert length(spectra)>=1
+    get_inst(first(spectra))
 end
 
 """ Return the largest minimum wavelength and smallest maximum wavelength of a spectrum.

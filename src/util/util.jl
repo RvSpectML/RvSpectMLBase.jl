@@ -22,7 +22,7 @@ export calc_normalization, calc_normalization_var_weighted
 
 include("spectra.jl")
 export apply_doppler_boost!, normalize_spectrum!, normalize_spectra!
-export get_λ_range, make_vec_metadata_from_spectral_timeseries, discard_large_metadata
+export get_λ_range, get_inst, make_vec_metadata_from_spectral_timeseries, discard_large_metadata
 #export calc_snr
 
 include("cs_algs.jl")
