@@ -257,6 +257,7 @@ function make_chunk_list_around_lines(spectra::AS, line_list::DataFrame; rv_shif
         @warn("I haven't tested this yet, especially the sign.")  # TODO
     end
     line_locs = map(row->find_line_best(row.lambda_lo*boost_factor,row.lambda_hi*boost_factor,spectra,Δ=Δ), eachrow(line_list) )
+    line_locs = line_locs[.!ismissing.(line_locs)]
     # TODO: Update to add order to ChunkList
     cl = ChunkList(map(loc->ChunkOfSpectrum(spectra,loc),line_locs), map(loc->loc[2], line_locs) )
 end
