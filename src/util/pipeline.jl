@@ -69,20 +69,20 @@ end
 make_plot(p::PipelinePlan, s::Symbol) = haskey(p.make_plot,s) && p.make_plot[s]
 make_plot!(p::PipelinePlan, s::Symbol) = p.make_plot[s] = true
 dont_make_plot!(p::PipelinePlan, s::Symbol) = p.make_plot[s] = false
-make_all_plots!(p::PipelinePlan, s::Symbol) = map(k -> p.make_plot[k]=true, collect(keys(p.make_plot)) )
-make_no_plots!(p::PipelinePlan, s::Symbol) = map(k -> p.make_plot[k]=false, collect(keys(p.make_plot)) )
+make_all_plots!(p::PipelinePlan ) = map(k -> p.make_plot[k]=true, collect(keys(p.make_plot)) )
+make_no_plots!(p::PipelinePlan ) = map(k -> p.make_plot[k]=false, collect(keys(p.make_plot)) )
 
 save_plot(p::PipelinePlan, s::Symbol) = haskey(p.save_plot,s) && p.save_plot[s]
 save_plot!(p::PipelinePlan, s::Symbol) = p.save_plot[s] = true
 dont_save_plot!(p::PipelinePlan, s::Symbol) = p.save_plot[s] = false
-save_all_plots!(p::PipelinePlan, s::Symbol) = map(k -> p.save_plot[k]=true, collect(keys(p.save_plot)) )
-save_no_plots!(p::PipelinePlan, s::Symbol) = map(k -> p.save_plot[k]=false, collect(keys(p.save_plot)) )
+save_all_plots!(p::PipelinePlan ) = map(k -> p.save_plot[k]=true, collect(keys(p.save_plot)) )
+save_no_plots!(p::PipelinePlan ) = map(k -> p.save_plot[k]=false, collect(keys(p.save_plot)) )
 
 save_data(p::PipelinePlan, s::Symbol) = haskey(p.save_data,s) && p.save_data[s]
 save_data!(p::PipelinePlan, s::Symbol) = p.save_data[s] = true
 dont_save_data!(p::PipelinePlan, s::Symbol) = p.save_data[s] = false
-save_all_data!(p::PipelinePlan, s::Symbol) = map(k -> p.save_data[k]=true, collect(keys(p.save_data)) )
-save_no_data!(p::PipelinePlan, s::Symbol) = map(k -> p.save_data[k]=false, collect(keys(p.save_data)) )
+save_all_data!(p::PipelinePlan ) = map(k -> p.save_data[k]=true, collect(keys(p.save_data)) )
+save_no_data!(p::PipelinePlan ) = map(k -> p.save_data[k]=false, collect(keys(p.save_data)) )
 
 need_to(p::PipelinePlan, s::Symbol) = haskey(p.need_to,s) && p.need_to[s]
 function need_to!(p::PipelinePlan, s::Symbol)
