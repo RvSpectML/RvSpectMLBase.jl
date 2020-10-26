@@ -78,7 +78,7 @@ function make_manifest(data_path::String, target_subdir::String, Inst::Module; v
 end
 =#
 
-"""   `code_to_include_param_jl( path_to_search; filename, verbose )`
+"""   `code_to_include_param_jl( ; path_to_search, filename, verbose )`
 
 Returns a Code object.  After `res = code_toread_param_jl( path_to_search )`,
 execute `eval(res)` to actually include the param.jl file.
@@ -86,7 +86,7 @@ This is useful since it allows variables to be placed into caller's namespace.
 
 Warning:  Malicious users could insert arbitrary code into param.jl.  Don't be a malicous user.
 """
-function code_to_include_param_jl(paths_to_search::Union{String,AbstractVector{String}} = default_paths_to_search; filename::String = "param.jl", verbose::Bool = true)
+function code_to_include_param_jl(;paths_to_search::Union{String,AbstractVector{String}} = default_paths_to_search, filename::String = "param.jl", verbose::Bool = true)
    if verbose   println("# Looking for param.jl file to set configuration parameters.")    end
    idx_path = findfirst(isfile,map(d->joinpath(d,filename),paths_to_search))
    if isnothing(idx_path)
