@@ -25,6 +25,7 @@ function generate_spectrum(line_list::DataFrame, inst::AnyTheoreticalInstrument;
    end
    var = flux ./ snr_per_pixel^2
    metadata = Dict{Symbol,Any}( :rv_true=>rv, :snr_per_pixel=>snr_per_pixel, :line_width=>line_width, :bjd=>time, :target=>"Simulation", :ssbz=>ssbz)
+   metadata[:normalization] = :continuum
    if typeof(inst) <: AbstractInstrument1D
 
       return Spectra1DBasic(λ,flux,var,inst, metadata)
