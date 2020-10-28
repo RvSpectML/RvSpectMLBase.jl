@@ -79,58 +79,68 @@ function find_which_line_fits_in_line_list(fit_list::AbstractVector{T1}, line_li
 end
 
 
-""" calc_line_width(λ, flux; frac_depth )
+""" calc_line_width(λ, flux; frac_depth, line_min_window_fraction )
 Returns the line width (units of λ) for specified fractional line depth (default of 0.5).
 Assumes continuum is the maximum flux provided.
+Assumes the line's minimum flux occurs within line_min_window_fraction, a central fraction of the total λ window.
+Returns NaN if target flux cannot be found on either side of the line
 """
-function calc_line_width(λ::AbstractArray{T1,1}, flux::AbstractArray{T2,1}; frac_depth::Real = 0.5 ) where { T1<:Real, T2<:Real }
+function calc_line_width(λ::AbstractArray{T1,1}, flux::AbstractArray{T2,1}; frac_depth::Real = 0.5,
+                        line_min_window_fraction::Real=0.5 ) where { T1<:Real, T2<:Real }
    @assert length(λ) == length(flux)
    @assert 0.05 <= frac_depth <= 0.99
-   idx_min_flux = argmin(flux)
+   #find the minimum flux, assuming it lies within the middle line_min_window_fraction (half by default) of the flux array. This assumption makes it harder for nearby lines to contaminate this minimum.
+   idx_min_flux = argmin(view(flux, floor(Int,length(flux) * (1.0-line_min_window_fraction)/2.0 ) : ceil(Int,length(flux)*(1.0-(1.0-line_min_window_fraction)/2.0)) )) + floor(Int,length(flux) * (1.0-line_min_window_fraction)/2.0 ) - 1
    min_flux = flux[idx_min_flux]
    continuum = maximum(flux)
    depth = 1.0 - min_flux/continuum
    target_flux = continuum*(1-frac_depth*depth)
    idxhi = idx_min_flux-1+searchsortedfirst(view(flux,idx_min_flux:length(flux)), target_flux)
-   if !(idx_min_flux<=idxhi<=length(flux))   idxhi = length(flux) end
+   if !(idx_min_flux<=idxhi<=length(flux))   return NaN end #if the target flux cannot be found on the right side of the line, return NaN
    idxlo = idxhi-1
    λ_hi = RvSpectMLBase.interp_linear(x1=flux[idxlo],x2=flux[idxhi],y1=λ[idxlo],y2=λ[idxhi],xpred=target_flux)
    idxlo = idx_min_flux+1-searchsortedfirst(view(flux,idx_min_flux:-1:1), target_flux )
-   if !(1<=idxlo<=idx_min_flux)   idxlo = 1 end
+   if !(1<=idxlo<=idx_min_flux)   return NaN end
    idxhi = idxlo+1
    λ_lo = RvSpectMLBase.interp_linear(x1=flux[idxlo],x2=flux[idxhi],y1=λ[idxlo],y2=λ[idxhi],xpred=target_flux)
    width = λ_hi-λ_lo
    return width
 end
 
-""" calc_line_bisector_at_frac_depth(λ, flux, frac_depth )
+""" calc_line_bisector_at_frac_depth(λ, flux; frac_depth, line_min_window_fraction )
 Returns the line average of wavelengths (units of λ) at specified fractional line depth.
 Assumes continuum is the maximum flux provided.
+Assumes the line's minimum flux occurs within line_min_window_fraction, a central fraction of the total λ window.
+Returns NaN if target flux cannot be found on either side of the line
 """
-function calc_line_bisector_at_frac_depth(λ::AbstractArray{T1,1}, flux::AbstractArray{T2,1}, frac_depth::Real ) where { T1<:Real, T2<:Real }
+function calc_line_bisector_at_frac_depth(λ::AbstractArray{T1,1}, flux::AbstractArray{T2,1}; frac_depth::Real,
+                     line_min_window_fraction::Real=0.5 ) where { T1<:Real, T2<:Real }
+   @assert length(λ) == length(flux)
    @assert 0.05 <= frac_depth <= 0.99
-   idx_min_flux = argmin(flux)
+   #find the minimum flux, assuming it lies within the middle line_min_window_fraction (half by default) of the flux array. This assumption makes it harder for nearby lines to contaminate this minimum.
+   idx_min_flux = argmin(view(flux, floor(Int,length(flux) * (1.0-line_min_window_fraction)/2.0 ) : ceil(Int,length(flux)*(1.0-(1.0-line_min_window_fraction)/2.0)) )) + floor(Int,length(flux) * (1.0-line_min_window_fraction)/2.0 ) - 1
    min_flux = flux[idx_min_flux]
    continuum = maximum(flux)
    depth = 1.0 - min_flux/continuum
-   abs_depth = frac_depth*depth
-
    target_flux = continuum*(1-frac_depth*depth)
    idxhi = idx_min_flux-1+searchsortedfirst(view(flux,idx_min_flux:length(flux)), target_flux)
+   if !(idx_min_flux<=idxhi<=length(flux))   return NaN end #if the target flux cannot be found on the right side of the line, return NaN
    idxlo = idxhi-1
    λ_hi = RvSpectMLBase.interp_linear(x1=flux[idxlo],x2=flux[idxhi],y1=λ[idxlo],y2=λ[idxhi],xpred=target_flux)
    idxlo = idx_min_flux+1-searchsortedfirst(view(flux,idx_min_flux:-1:1), target_flux )
+   if !(1<=idxlo<=idx_min_flux)   return NaN end
    idxhi = idxlo+1
    λ_lo = RvSpectMLBase.interp_linear(x1=flux[idxlo],x2=flux[idxhi],y1=λ[idxlo],y2=λ[idxhi],xpred=target_flux)
    bisector = (λ_hi+λ_lo)/2
    return bisector
 end
 
-""" calc_line_bisector_at_frac_depth(λ, flux, abs_depth )
+""" calc_line_bisector_at_abs_depth(λ, flux; abs_depth )
 Returns the line average of wavelengths (units of λ) at specified absolute line depth.
 Assumes continuum is the maximum flux provided.
 """
-function calc_line_width(λ::AbstractArray{T1,1}, flux::AbstractArray{T2,1}, abs_depth::Real ) where { T1<:Real, T2<:Real }
+function calc_line_bisector_at_abs_depth(λ::AbstractArray{T1,1}, flux::AbstractArray{T2,1}; abs_depth::Real ) where { T1<:Real, T2<:Real }
+   @assert length(λ) == length(flux)
    @assert 0.05 <= abs_depth <= 0.99
    idx_min_flux = argmin(flux)
    continuum = maximum(flux)
