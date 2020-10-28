@@ -92,11 +92,11 @@ function calc_line_width(λ::AbstractArray{T1,1}, flux::AbstractArray{T2,1}; fra
    depth = 1.0 - min_flux/continuum
    target_flux = continuum*(1-frac_depth*depth)
    idxhi = idx_min_flux-1+searchsortedfirst(view(flux,idx_min_flux:length(flux)), target_flux)
-   if !(min_flux<=idxhi<=length(flux))   idxhi = length(flux) end
+   if !(idx_min_flux<=idxhi<=length(flux))   idxhi = length(flux) end
    idxlo = idxhi-1
    λ_hi = RvSpectMLBase.interp_linear(x1=flux[idxlo],x2=flux[idxhi],y1=λ[idxlo],y2=λ[idxhi],xpred=target_flux)
    idxlo = idx_min_flux+1-searchsortedfirst(view(flux,idx_min_flux:-1:1), target_flux )
-   if !(1<=idxlo<=min_flux)   idxlo = 1 end
+   if !(1<=idxlo<=idx_min_flux)   idxlo = 1 end
    idxhi = idxlo+1
    λ_lo = RvSpectMLBase.interp_linear(x1=flux[idxlo],x2=flux[idxhi],y1=λ[idxlo],y2=λ[idxhi],xpred=target_flux)
    width = λ_hi-λ_lo

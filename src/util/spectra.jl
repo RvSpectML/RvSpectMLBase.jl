@@ -134,6 +134,63 @@ function make_vec_metadata_from_spectral_timeseries(spec_arr::AA) where { AS<:Ab
     map(s->s.metadata,spec_arr)
 end
 
+""" Return DataFrame with information about which pixels and wavelengths to use from each order"""
+function get_order_info(all_spectra::AAS; orders_to_use::Union{UnitRange,AbstractVector{T1} } = min_order(get_inst(all_spectra)):max_order(get_inst(all_spectra))) where { AS<:AbstractSpectra2D, AAS<:AbstractVector{AS}, T1<:Integer }
+  @assert length(orders_to_use) >= 1
+
+  inst = get_inst(all_spectra)
+  num_orders = length(orders_to_use)
+  #pixel_ranges = Array{UnitRange,1}(undef,num_orders)
+  order_info = Any[]
+  for order in orders_to_use #min_order(inst):max_order(inst)
+    this_order_info = Dict{Symbol,Any}(:order=>order)
+    pixel_range = get_pixel_range(inst,order)
+    min_pixels_in_order = 60
+    #=
+    pixel_range = min_col_default(inst,order):max_col_default(inst,order)
+    if typeof(inst) <: AnyEXPRES &&
+        ( EXPRES.max_col_excalibur(inst, order) - EXPRES.min_col_excalibur(inst, order) >= min_pixels_in_order )
+
+        minc = max(first(pixel_range), EXPRES.min_col_excalibur(inst,order), EXPRES.min_col_nonnan(inst,order))
+        maxc = min(last(pixel_range), EXPRES.max_col_excalibur(inst,order), EXPRES.max_col_nonnan(inst,order))
+        pixel_range = minc:maxc
+      end
+    =#
+    if length(pixel_range) > min_pixels_in_order
+        this_order_info[:pixel_range] = pixel_range
+        (this_order_info[:λ_min], this_order_info[:λ_max], this_order_info[:mean_Δv]) = get_shared_wavelength_range_for_order(all_spectra,order, pixels_to_use=pixel_range )
+        push!(order_info,this_order_info)
+    end
+  end
+  return DataFrame(order_info)
+end
+
+function calc_mean_Δv(λ::AbstractVector{T1}, λ_min::Real, λ_max::Real ) where { T1<:Real }
+    idx_min = searchsortedfirst(λ,λ_min)
+    idx_max = searchsortedlast(λ,λ_max)
+    @assert 1 <= idx_min <= length(λ)
+    @assert 1 <= idx_max <= length(λ)
+    Δv = log(λ[idx_max]/λ[idx_min])/(idx_max-idx_min) * RvSpectMLBase.speed_of_light_mps
+end
+
+function get_shared_wavelength_range_for_order(spectra::AbstractVector{AS}, order::Integer; pixels_to_use::AR = min_col_default(get_inst(spectra),order):max_col_default(get_inst(spectra),order),
+             boost_factor::AA1 = ones(length(spectra)), verbose::Bool=false ) where {
+             AS<:AbstractSpectra2D, AR<:AbstractRange{Int64}, T1<:Real, AA1<:AbstractVector{T1} }
+        num_obs = length(spectra)
+        @assert 1 <= num_obs # <= max_num_spectra
+        if verbose   println("# order = ", order, " pixels_to_use = ", pixels_to_use)   end
+        λ_min = maximum(minimum(spectra[t].λ[pixels_to_use,order])/boost_factor[t] for t in 1:num_obs)
+        λ_max = minimum(maximum(spectra[t].λ[pixels_to_use,order])/boost_factor[t] for t in 1:num_obs)
+        mean_Δv = sum(map(t->calc_mean_Δv(view(spectra[t].λ, pixels_to_use, order), λ_min, λ_max),1:num_obs)) / num_obs
+        return (λ_min=λ_min, λ_max=λ_max, mean_Δv=mean_Δv)
+        #=
+        @assert spacing == :Log || spacing == :Linear
+        if spacing == :Log
+            @warn "There's some issues with end points exceeding the bounds.  Round off error?  May cause bounds errors."
+        end
+        =#
+end
+
 function discard_large_metadata(data::Union{ACLT,AS, AAS}) where { ACLT<:AbstractChunkListTimeseries, AS<:AbstractSpectra, AAS<:AbstractArray{AS} }
     if typeof(data.inst) <: AnyTheoreticalInstrument
         # Nothing to do

@@ -5,34 +5,33 @@ Author: Eric Ford
 Created: Sept 2020
 """
 
-default_paths_to_search = [".",joinpath(".","examples"),pwd(),joinpath(pwd(),"examples"),"/gpfs/group/ebf11/default/ebf11/expres/inputs"]
+default_paths_to_search = [".",joinpath(".","examples"),pwd(),joinpath(pwd(),"examples") ]
 
 
-""" `read_data_paths( ; path_to_search )`
+""" `read_data_paths( ; path_to_search, filename, verbose )`
 Looks for data_paths.jl and includes it to set data_paths
 
 Warning:  Malicious users could insert arbitrary code into data_paths.jl.  Don't be a malicous user.
 """
-function read_data_paths(; paths_to_search::Union{String,AbstractVector{String}} = default_paths_to_search, verbose::Bool = true)
+function read_data_paths(; paths_to_search::Union{String,AbstractVector{String}} = default_paths_to_search, filename::String = "data_paths.jl", verbose::Bool = true)
    if verbose   println("# Looking for data paths and config files in default_paths_to_search.")    end
-   idx_path = findfirst(isfile,map(d->joinpath(d,"data_paths.jl"),paths_to_search))
+   idx_path = findfirst(isfile,map(d->joinpath(d,filename),paths_to_search))
    if isnothing(idx_path)
-      @error("Can't find data_paths.jl in any of: ", paths_to_search)
+      @error("Can't find ", filename, "  in any of: ", paths_to_search)
    end
    data_paths_jl = paths_to_search[idx_path]
-   println("# Found ", data_paths_jl)
-   flush(stdout)
+   if verbose   println("# Found ", data_paths_jl, " directory.")   end
    if !isdir(data_paths_jl)
          @error("Can't access instrument's base data directory ", data_paths_jl, ".")
    end
 
-   path_to_data_paths = joinpath(pwd(),data_paths_jl,"data_paths.jl")
+   path_to_data_paths = joinpath(pwd(),data_paths_jl,filename)
    if isfile(path_to_data_paths)
       code_to_include_param = quote
          include($path_to_data_paths)
       end
    else
-      println("# Did not locate ", joinpath(pwd(),data_paths_jl,"data_paths.jl") )
+      println("# Did not locate ", path_to_data_paths )
    end
    return code_to_include_param
 end
@@ -79,7 +78,7 @@ function make_manifest(data_path::String, target_subdir::String, Inst::Module; v
 end
 =#
 
-"""   `code_to_include_param_jl( path_to_search )`
+"""   `code_to_include_param_jl( ; path_to_search, filename, verbose )`
 
 Returns a Code object.  After `res = code_toread_param_jl( path_to_search )`,
 execute `eval(res)` to actually include the param.jl file.
@@ -87,7 +86,7 @@ This is useful since it allows variables to be placed into caller's namespace.
 
 Warning:  Malicious users could insert arbitrary code into param.jl.  Don't be a malicous user.
 """
-function code_to_include_param_jl(paths_to_search::Union{String,AbstractVector{String}} = default_paths_to_search; filename::String = "param.jl", verbose::Bool = true)
+function code_to_include_param_jl(;paths_to_search::Union{String,AbstractVector{String}} = default_paths_to_search, filename::String = "param.jl", verbose::Bool = true)
    if verbose   println("# Looking for param.jl file to set configuration parameters.")    end
    idx_path = findfirst(isfile,map(d->joinpath(d,filename),paths_to_search))
    if isnothing(idx_path)
@@ -98,12 +97,12 @@ function code_to_include_param_jl(paths_to_search::Union{String,AbstractVector{S
 
    path_to_param = joinpath(pwd(),data_path,filename)
    if isfile(path_to_param )
-      println("# Reading parameter values from ", filename)
+      if verbose    println("# Reading parameter values from ", path_to_param)   end
       code_to_include_param = quote
          include($path_to_param)
       end
    else
-      println("# Did not locate ", filename, " in ",data_path, ".") #  Returning code to set default values for lots of things.")
+      println("# Did not locate ", filename, " in ", data_path, ".") #  Returning code to set default values for lots of things.")
       # Set defaults in case not in param.jl
       code_to_include_param = quote
          #=

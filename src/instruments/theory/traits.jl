@@ -6,7 +6,7 @@ Created: August 2020
 
 """ Delegates loading of code specifying types essential to the package.  """
 
-import ..RvSpectMLBase.InstrumentsCommon: min_pixel, max_pixel, min_order, max_order, min_pixel_in_order, max_pixel_in_order
+import ..RvSpectMLBase.InstrumentsCommon: min_pixel, max_pixel, min_order, max_order, min_pixel_in_order, max_pixel_in_order, get_pixel_range
 import ..RvSpectMLBase.InstrumentsCommon: orders_to_use_default, min_col_default, max_col_default
 
 min_pixel(::TheoreticalInstrument1D) = 1
@@ -31,6 +31,10 @@ max_pixel_in_order(inst::TheoreticalInstrument2D) = inst.pixels_per_order
 orders_to_use_default(inst::TheoreticalInstrument2D) = min_order(inst):max_order(inst)
 min_col_default(::TheoreticalInstrument2D, ord::Integer) = 1
 max_col_default(inst::TheoreticalInstrument2D, ord::Integer) = max_pixel_in_order(inst)
+
+function get_pixel_range(inst::TheoreticalInstrument2D, ord::Integer)
+    min_col_default(inst, ord):max_col_default(inst, ord)
+end
 
 import ..RvSpectMLBase.InstrumentsCommon: metadata_symbols_default, metadata_strings_default
 metadata_symbols_default(::AnyTheoreticalInstrument) = Symbol[] #:bjd, :target, :ssbz]
