@@ -15,6 +15,14 @@ function make_chunk_list_from_loc_df(spectra::AS, inst::AbstractInstrument2D, df
 
 end
 
+function make_chunk_list_timeseries_from_λ_ranges( spectra::AS, df_λ_good::DataFrame ) where {ST<:AbstractSpectra, AS<:AbstractArray{ST,1} }
+    times = map(s->s.metadata[:bjd],spectra)
+    inst = get_inst(spectra)
+    metadata = make_vec_metadata_from_spectral_timeseries(spectra)
+    chunk_lists = map( spec->RvSpectMLBase.make_chunk_list_from_loc_df(spec,get_inst(spectra), df_λ_good), spectra)
+    chunk_list_timeseries = ChunkListTimeseries(times, chunk_lists, inst=first(spectra).inst, metadata=metadata )
+end
+
 function make_chunk_list_timeseries_telluric_free(spectra::AS, df_λ_good::DataFrame; min_pixels_in_chunk::Integer = 250, verbose::Bool = false ) where {ST<:AbstractSpectra, AS<:AbstractArray{ST,1} }
     max_Δv_match_chunk = 2*max_bc
     inst = first(spectra).inst
@@ -144,6 +152,8 @@ function make_order_pixel_list_for_chunks_in_order(spectra::AS, inst::AbstractIn
             if idx_hi-idx_lo > min_pixels_per_chunk # TODO Make min_pixels_per_chunk
                 if verbose   println("# Found pixels:", pixels_to_use[idx_lo]:pixels_to_use[idx_hi], " or λ= ",spectra.λ[pixels_to_use[idx_lo],order_idx], " - ", spectra.λ[pixels_to_use[idx_hi],order_idx])   end
                 push!(df_out,Dict(:pixels=>pixels_to_use[idx_lo]:pixels_to_use[idx_hi], :order=>order_idx))
+                idx_hi += 1
+            else
                 idx_hi += 1
             end
         end # while still in order

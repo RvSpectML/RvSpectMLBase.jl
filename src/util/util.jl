@@ -13,6 +13,7 @@ include("find_line.jl")
 
 include("chunks.jl")
 export make_orders_into_chunks, make_grid_for_chunk,  extract_chunk_list_timeseries_for_order
+export make_chunk_list_timeseries_from_λ_ranges
 export make_chunk_list_around_lines, make_chunk_list_timeseries_around_lines, make_chunk_list_tellric_free, make_chunk_list_timeseries_tellric_free
 export make_order_list_timeseries
 export find_orders_with_line, find_orders_in_range
