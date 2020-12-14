@@ -15,6 +15,7 @@ include("chunk_list.jl")
 export AbstractChunkList, ChunkList
 export AbstractChunkListTimeseries, ChunkListTimeseries
 export length, num_chunks, num_times
+export extract_chunklist_timeseries_with_subset_obs
 
 include("spectra_timeseries_common_wavelengths.jl")
 export AbstractSpectralTimeSeriesCommonWavelengths

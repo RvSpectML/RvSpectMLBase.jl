@@ -20,7 +20,7 @@ function ChunkOfSpectrum{T1,T2,T3}(λ::A1, flux::A2, var::A3) where {  T1<:Real,
     @assert size(λ) == size(var)
     min_pixels_in_chunk = 3
     max_pixels_in_chunk = 10000
-    @assert min_pixels_in_chunk <= length(λ) <= max_pixels_in_chunk
+    #@assert min_pixels_in_chunk <= length(λ) <= max_pixels_in_chunk
     ChunkOfSpectrum{eltype(λ),eltype(flux),eltype(var),typeof(λ),typeof(flux),typeof(var)}(λ,flux,var)
 end
 
@@ -41,7 +41,6 @@ function ChunkOfSpectrum(λ::A1, flux::A2, var::A3, pixels::AUR) where {  T1<:Re
     ChunkOfSpectrum{T1,T2,T3}(view(λ,pixels),view(flux,pixels),view(var,pixels))
 end
 
-
 function ChunkOfSpectrum(λ::A1, flux::A2, var::A3, loc::NamedTuple{(:pixels, :order),Tuple{AUR,I1}}) where {  T1<:Real, T2<:Real, T3<:Real, A1<:AbstractArray{T1,2}, A2<:AbstractArray{T2,2}, A3<:AbstractArray{T3,2}, AUR<:AbstractUnitRange, I1<:Integer }
     ChunkOfSpectrum(λ,flux,var,loc.order,loc.pixels)
 end
@@ -61,6 +60,10 @@ end
 function ChunkOfSpectrum(spectra::AS, loc::NamedTuple{(:pixels, :order),Tuple{AUR,I1}}) where {  AS<:AbstractSpectra1D, AUR<:AbstractUnitRange, I1<:Integer }
     @assert loc.order == 1
     ChunkOfSpectrum(spectra.λ,spectra.flux,spectra.var,loc.pixels)
+end
+
+function empty_chunk_of_spectrum()
+    ChunkOfSpectrum{Float64,Float64,Float64}(Float64[],Float64[],Float64[])
 end
 
 # TODO: Generalize in case not standard view's
