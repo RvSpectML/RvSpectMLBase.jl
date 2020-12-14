@@ -394,6 +394,14 @@ function filter_bad_chunks(chunk_list_timeseries::ACLT; verbose::Bool = false) w
     end
 end
 
+""" Create/update metadata entry rv_est for each observation in a ChunkListTimeseries """
+function set_rv_est!(clt::ACLT, rvs::AbstractVector{T})  where { ACLT<:AbstractChunkListTimeseries, T<:Real }
+  @assert num_times(clt) == length(rvs)
+  for i in 1:num_times(clt)
+    clt.metadata[i][:rv_est] = rvs[i]
+  end
+  return clt
+end
 
 
 #= This version has some EXPRES-specific code.  Could incorporate into to EchelleInstruments.EXPRES module.

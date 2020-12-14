@@ -20,6 +20,7 @@ export find_orders_with_line, find_orders_in_range
 export findall_line, find_line_best
 export filter_bad_chunks, find_pixels_for_line_in_chunk, find_pixels_for_line_in_chunklist
 export calc_normalization, calc_normalization_var_weighted
+export set_rv_est!
 
 include("spectra.jl")
 export apply_doppler_boost!, normalize_spectrum!, normalize_spectra!
