@@ -13,7 +13,7 @@ struct ChunkList{CT<:AbstractChunkOfSpectrum, ACT<:AbstractArray{CT,1}, OT<:Inte
       order::AOT
 
       function ChunkList{CT,ACT,OT,AOT}(chunks::ACT, orders::AOT) where {CT<:AbstractChunkOfSpectrum, ACT<:AbstractArray{CT,1}, OT<:Integer, AOT<:AbstractArray{OT,1} }
-          @assert length(chunks)>=1
+          #@assert length(chunks)>=1
           @assert length(chunks) == length(orders)
           new(chunks,orders)
       end
@@ -97,3 +97,13 @@ metadata(chunk_list_timeseries::ACLT, i::Integer, key::Symbol) where {ACLT<:Abst
 
 """ Get instrument used for chunk_list_timeseries.  """
 instrument(chunk_list_timeseries::ACLT) where {ACLT<:AbstractChunkListTimeseries} = chunk_list_timeseries.inst
+
+""" Make a ChunkListTimeseries containing a subset of observations from an existing  ChunkListTimeseries """
+function extract_chunklist_timeseries_with_subset_obs( clt::AbstractChunkListTimeseries, ref_obs_idx::Union{Integer,AbstractVector{Integer}} ) where { CLT<:AbstractChunkListTimeseries }
+  if typeof(ref_obs_idx) <: Integer
+      @assert 1 <= ref_obs_idx <= num_times(clt)
+  else
+      @assert all(1 .<= ref_obs_idx .<= num_times(clt))
+  end
+  ChunkListTimeseries([clt.times[ref_obs_idx]], [clt.chunk_list[ref_obs_idx]], clt.inst, [clt.metadata[ref_obs_idx]]   )
+end
