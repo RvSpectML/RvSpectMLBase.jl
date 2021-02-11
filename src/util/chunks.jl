@@ -412,7 +412,7 @@ function filter_bad_chunks(chunk_list_timeseries::ACLT; verbose::Bool = false) w
     else
         if verbose
             println("# Removing ", length(chunks_to_remove), " chunks due to NaNs.")
-            map(c->println("# ",c,": ",findall(.!idx_keep)))
+            map(c->println("# ",c),chunks_to_remove)
         end
         new_chunk_list_timeseries = [ChunkList(chunk_list_timeseries.chunk_list[t].data[idx_keep], chunk_list_timeseries.chunk_list[t].order[idx_keep]) for t in 1:length(chunk_list_timeseries) ]
         #return ChunkListTimeseries(chunk_list_timeseries.times[idx_keep],new_chunk_list_timeseries, inst=chunk_list_timeseries.inst, metadata=chunk_list_timeseries.metadata[idx_keep])
