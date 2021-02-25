@@ -143,6 +143,9 @@ function make_order_pixel_list_for_chunks_in_order(spectra::AS, inst::AbstractIn
     df_out = DataFrame(:pixels=>UnitRange[], :order=>Int[])
     for order_idx in orders_to_use
         pixels_to_use = min_col_default(spectra.inst,order_idx):max_col_default(spectra.inst,order_idx)
+        #min_col = max(first(get_pixel_range(spectra.inst,order_idx)), 1825)
+        #max_col = min(last(get_pixel_range(spectra.inst,order_idx)), 7000)
+        #pixels_to_use = min_col:max_col
         if length(pixels_to_use) < min_pixels_per_chunk
             if verbose   println("# Skipping order_idx= ", order_idx, " due to pixel length")   end
             continue
