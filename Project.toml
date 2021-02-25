@@ -1,7 +1,7 @@
 name = "RvSpectMLBase"
 uuid = "c48404b2-35ea-40e7-ac7f-06a53de703d6"
 authors = ["Eric Ford"]
-version = "0.1.6"
+version = "0.1.7"
 
 [deps]
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
