@@ -136,6 +136,11 @@ function calc_snr(spectrum::ST, pixels::AR, order::Integer) where { ST<:Abstract
     calc_snr( view(spectrum.flux,pixels,order), view(spectrum.var,pixels,order) )
 end
 
+function calc_snr(chunk::AC) where { AC<:AbstractChunkOfSpectrum } 
+    calc_snr( chunk.flux, chunk.var )
+end
+
+
 """ Normalize spectrum, multiplying fluxes by scale_fac. """
 function normalize_spectrum!(spectrum::ST, scale_fac::Real) where { ST<:AbstractSpectra }
     @assert 0 < scale_fac < Inf
