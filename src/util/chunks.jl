@@ -24,12 +24,15 @@ function make_chunk_list_timeseries_from_λ_ranges( spectra::AS, df_λ_good::Dat
     chunk_list_timeseries = ChunkListTimeseries(times, chunk_lists, inst=first(spectra).inst, metadata=metadata )
 end
 
+
+
 function make_chunk_list_from_orders_pixels_df(spectra::AS, inst::AbstractInstrument2D, df_orders_pixels::DataFrame ) where {AS<:AbstractSpectra }
     ChunkList( map(r-> ChunkOfSpectrum(spectra,(pixels=r.pixels,order=r.order)),  eachrow(df_orders_pixels) ),
             map(r->r.order,eachrow(df_orders_pixels) ) )
 
 end
 
+function make_chunk_list_timeseries_from_orders_pixels_df(spectra::AS, inst::AbstractInstrument2D, df_orders_pixels::DataFrame ) where {ST<:AbstractSpectra, AS<:AbstractArray{ST,1} }
     times = map(s->s.metadata[:bjd],spectra)
     inst = get_inst(spectra)
     metadata = make_vec_metadata_from_spectral_timeseries(spectra)
