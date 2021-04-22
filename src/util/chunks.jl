@@ -24,6 +24,23 @@ function make_chunk_list_timeseries_from_λ_ranges( spectra::AS, df_λ_good::Dat
     chunk_list_timeseries = ChunkListTimeseries(times, chunk_lists, inst=first(spectra).inst, metadata=metadata )
 end
 
+
+
+function make_chunk_list_from_orders_pixels_df(spectra::AS, inst::AbstractInstrument2D, df_orders_pixels::DataFrame ) where {AS<:AbstractSpectra }
+    ChunkList( map(r-> ChunkOfSpectrum(spectra,(pixels=r.pixels,order=r.order)),  eachrow(df_orders_pixels) ),
+            map(r->r.order,eachrow(df_orders_pixels) ) )
+
+end
+
+function make_chunk_list_timeseries_from_orders_pixels_df(spectra::AS, inst::AbstractInstrument2D, df_orders_pixels::DataFrame ) where {ST<:AbstractSpectra, AS<:AbstractArray{ST,1} }
+    times = map(s->s.metadata[:bjd],spectra)
+    inst = get_inst(spectra)
+    metadata = make_vec_metadata_from_spectral_timeseries(spectra)
+    chunk_lists = map( spec->RvSpectMLBase.make_chunk_list_from_orders_pixels_df(spec,get_inst(spectra), df_orders_pixels), spectra)
+
+    chunk_list_timeseries = ChunkListTimeseries(times, chunk_lists, inst=first(spectra).inst, metadata=metadata )
+end
+
 function make_chunk_list_timeseries_telluric_free(spectra::AS, df_λ_good::DataFrame; min_pixels_in_chunk::Integer = 250, verbose::Bool = false ) where {ST<:AbstractSpectra, AS<:AbstractArray{ST,1} }
     max_Δv_match_chunk = 2*max_bc
     inst = first(spectra).inst
@@ -143,6 +160,9 @@ function make_order_pixel_list_for_chunks_in_order(spectra::AS, inst::AbstractIn
     df_out = DataFrame(:pixels=>UnitRange[], :order=>Int[])
     for order_idx in orders_to_use
         pixels_to_use = min_col_default(spectra.inst,order_idx):max_col_default(spectra.inst,order_idx)
+        #min_col = max(first(get_pixel_range(spectra.inst,order_idx)), 1825)
+        #max_col = min(last(get_pixel_range(spectra.inst,order_idx)), 7000)
+        #pixels_to_use = min_col:max_col
         if length(pixels_to_use) < min_pixels_per_chunk
             if verbose   println("# Skipping order_idx= ", order_idx, " due to pixel length")   end
             continue

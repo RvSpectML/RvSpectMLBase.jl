@@ -252,14 +252,32 @@ end
 
 
 
-""" `is_in_wavelength_range_list(λ; list )`
+""" `is_in_wavelength_range_list_any_order(λ; list )`
 Return true if λ is between lambda_lo and lambda_hi for any row in list
 """
-function is_in_wavelength_range_list(λ::Real; list::DataFrame  )
+function is_in_wavelength_range_list_any_order(λ::Real; list::DataFrame  )
     @assert hasproperty(list, :lambda_lo)
     @assert hasproperty(list, :lambda_hi)
     idx =  searchsortedfirst(list[:,:lambda_hi], λ)
     return idx>size(list,1) || !(list[idx,:lambda_lo]<=λ<=list[idx,:lambda_hi]) ?  false : true
+end
+
+
+""" `is_in_wavelength_range_list(λ; order, list )`
+Return true if λ is between lambda_lo and lambda_hi for any row in list
+"""
+function is_in_wavelength_range_list(λ::Real; order::Integer = 0, list::DataFrame  )
+    @assert hasproperty(list, :lambda_lo)
+    @assert hasproperty(list, :lambda_hi)
+    if order == 0
+        return is_in_wavelength_range_list_any_order(λ, list=list)
+    else
+        @assert hasproperty(list, :order)
+        list_for_order = list |> @filter(_.order==order) |> DataFrame
+        @assert issorted(list_for_order.lambda_hi)
+        idx =  searchsortedfirst(list_for_order[:,:lambda_hi], λ)
+        return idx>size(list_for_order,1) || !(list_for_order[idx,:lambda_lo]<=λ<=list_for_order[idx,:lambda_hi]) ?  false : true
+    end
 end
 
 

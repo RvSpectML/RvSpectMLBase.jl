@@ -38,14 +38,70 @@ function apply_doppler_boost!(spectra::AS,doppler_factor::Real) where {AS<:Abstr
     return spectra
 end
 
+global have_issued_ssb_warning = false
+global have_issued_drift_warning = false
+global have_issued_diffext_warning = false
+function apply_doppler_boost!(spectra::AS, dict::AbstractDict ) where { AS<:AbstractSpectra }
+    global have_issued_ssb_warning, have_issued_drift_warning, have_issued_diffext_warning
+    local doppler_factor = one(eltype(spectra.λ))
+    #= NEID drift model is now included in wavelengths provided
+    if !haskey(dict,:drift_rv) && !haskey(dict,:drift_z ) && !have_issued_drift_warning
+        @info "apply_doppler_boost! didn't find :drift_rv or :drivft_z to apply."
+        have_issued_drift_warning = true
+    end
+    if  haskey(dict,:drift_z)
+        doppler_factor *= calc_doppler_factor(z=dict[:drift_z])
+    elseif  haskey(dict,:drift_rv)
+        doppler_factor *= calc_doppler_factor(dict[:drift_rv])
+    end
+    =#
+    if !haskey(dict,:ssb_rv) && !haskey(dict,:ssbz) && !have_issued_ssb_warning
+         @info "apply_doppler_boost! didn't find :ssb_rv or :ssbz to apply."
+         have_issued_ssb_warning = true
+    end
+    if  haskey(dict,:ssbz)
+        doppler_factor   *= calc_doppler_factor(z=dict[:ssbz])
+    elseif  haskey(dict,:ssb_rv)
+        doppler_factor   *= calc_doppler_factor(dict[:ssb_rv])
+    end
+    if !haskey(dict,:diff_ext_rv ) && !have_issued_diffext_warning
+        @info "apply_doppler_boost! didn't find :diff_ext_rv to apply."
+        have_issued_diffext_warning = true
+    end
+    if  haskey(dict,:diff_ext_rv)  doppler_factor   *= calc_doppler_factor.(dict[:diff_ext_rv])  end
+    apply_doppler_boost!(spectra,doppler_factor)
+    return spectra
+end
+
 function apply_doppler_boost!(spectra::AbstractArray{AS}, df::DataFrame ) where { AS<:AbstractSpectra }
     @assert size(spectra,1) == size(df,1)
+    global have_issued_ssb_warning, have_issued_drift_warning, have_issued_diffext_warning
     local doppler_factor = ones(size(spectra))
-    if !hasproperty(df,:drift) @info "apply_doppler_boost! didn't find :drift to apply."   end
-    if  hasproperty(df,:drift)        doppler_factor .*= calc_doppler_factor.(df[!,:drift])          end
-    if !hasproperty(df,:drift) @info "apply_doppler_boost! didn't find :ssb_rv to apply."  end
-    if  hasproperty(df,:ssb_rv)       doppler_factor   .*= calc_doppler_factor.(df[!,:ssb_rv])       end
-    if !hasproperty(df,:drift) @info "apply_doppler_boost! didn't find :diff_ext_rv to apply."  end
+    #if !hasproperty(df,:drift) @info "apply_doppler_boost! didn't find :drift to apply."   end
+    #if  hasproperty(df,:drift)        doppler_factor .*= calc_doppler_factor.(df[!,:drift])          end
+    if !haskey(dict,:drift_rv) && !haskey(dict,:drift_z ) && !have_issued_drift_warning
+        @info "apply_doppler_boost! didn't find :drift_rv or :drivft_z to apply."
+        have_issued_drift_warning = true
+    end
+    if  haskey(dict,:drift_z)
+        doppler_factor *= calc_doppler_factor(z=dict[:drift_z])
+    elseif  haskey(dict,:drift_rv)
+        doppler_factor *= calc_doppler_factor(dict[:drift_rv])
+    end
+
+    if !hasproperty(df,:ssb_rv) && !hasproperty(df,:ssbz)  && !have_issued_ssb_warning
+        @info "apply_doppler_boost! didn't find :ssb_rv or :ssbz to apply."
+        have_issued_ssb_warning = true
+    end
+    if  hasproperty(df,:ssb_z)
+        doppler_factor   .*= calc_doppler_factor.(z=df[!,:ssbz])
+    elseif  hasproperty(df,:ssb_rv)
+        doppler_factor   .*= calc_doppler_factor.(df[!,:ssb_rv])
+    end
+    if !hasproperty(df,:drift) && !have_issued_diffext_warning
+        @info "apply_doppler_boost! didn't find :diff_ext_rv to apply."
+        have_issued_diffext_warning = true
+    end
     if  hasproperty(df,:diff_ext_rv)  doppler_factor   .*= calc_doppler_factor.(df[!,:diff_ext_rv])  end
     map(x->apply_doppler_boost!(x[1],x[2]), zip(spectra,doppler_factor) );
 end
@@ -79,6 +135,11 @@ function calc_snr(spectrum::ST, pixels::AR, order::Integer) where { ST<:Abstract
     =#
     calc_snr( view(spectrum.flux,pixels,order), view(spectrum.var,pixels,order) )
 end
+
+function calc_snr(chunk::AC) where { AC<:AbstractChunkOfSpectrum } 
+    calc_snr( chunk.flux, chunk.var )
+end
+
 
 """ Normalize spectrum, multiplying fluxes by scale_fac. """
 function normalize_spectrum!(spectrum::ST, scale_fac::Real) where { ST<:AbstractSpectra }

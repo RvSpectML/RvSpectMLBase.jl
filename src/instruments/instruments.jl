@@ -65,14 +65,14 @@ export find_worst_telluric_in_each_chunk, make_clean_line_list_from_tellurics_ex
 export filter_line_list
 =#
 
-import .InstrumentsCommon: pixels_all, min_pixel, max_pixel, max_pixels_in_spectra, min_col_default, max_col_default, get_pixel_range
+import .InstrumentsCommon: pixels_all, min_pixel, max_pixel, max_pixels_in_spectra, min_col_default, max_col_default, bad_col_ranges, get_pixel_range
 import .InstrumentsCommon: orders_all, min_order, max_order, orders_to_use_default
 import .InstrumentsCommon: min_pixel_in_order, max_pixel_in_order, min_pixels_in_chunk
 import .InstrumentsCommon: metadata_symbols_default, metadata_strings_default
 import .InstrumentsCommon: default_ccf_mask_v_width
 import .InstrumentsCommon: make_clean_line_list_from_tellurics, choose_obs_idx_for_init_guess
 
-export min_order, max_order, min_pixel_in_order, max_pixel_in_order, get_pixel_range
+export min_order, max_order, min_pixel_in_order, max_pixel_in_order, get_pixel_range, bad_col_ranges
 export orders_to_use_default, min_col_default, max_col_default
 export orders_all, pixels_all, max_pixels_in_spectra       # generic implementations avaliable
 export metadata_symbols_default, metadata_strings_default  # need to specialize

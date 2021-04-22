@@ -30,6 +30,9 @@ function min_col_default end
 """Returns maximum pixel index to be read from header into metadata by default for the specified instrument"""
 function max_col_default end
 
+"""Returns ranges of bad columns"""
+function bad_col_ranges end
+
 """Returns integer range of min and maximum pixels to use for specified instrument and order."""
 function get_pixel_range end
 

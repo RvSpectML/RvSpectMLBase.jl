@@ -14,6 +14,7 @@ const max_bc_earth_orbit_circular = 29795.9  #  2pu AU / year in m/s
 const max_bc_earth_orbit = max_bc_earth_orbit_circular * (1+earth_eccentricity)
 const max_bc_earth_rotation = 463.8  # 2pi R_Earth / day in m/s
 const max_bc = max_bc_earth_orbit + max_bc_earth_rotation
+const max_bc_solar = max_bc_earth_orbit_circular*earth_eccentricity + max_bc_earth_rotation
 
 """
 Estimate line width based on stellar Teff (K) and optionally v_rot (m/s).  Output in m/s.
@@ -31,6 +32,7 @@ const default_line_width_mps = predict_intrinsic_stellar_line_width(teff_solar,v
 
 """
    `calc_doppler_factor(rv; v_perp)`
+   `calc_doppler_factor(; z)`
 
 Return the Doppler boost factor (non-relativistic) for rv in m/s.
 """
@@ -38,6 +40,8 @@ function calc_doppler_factor end
 
 calc_doppler_factor(rv::Real) = one(rv) + rv/speed_of_light_mps
 calc_doppler_factor(rv::Real, v_perp::Real) = (one(rv) + rv/speed_of_light_mps)/(one(rv) - (rv^2+v_perp^2)/speed_of_light_mps^2)
+
+calc_doppler_factor(;z::Real) = one(z) + z
 
 
 """

@@ -11,6 +11,10 @@ Contact: https://github.com/eford/
 include("find_line.jl")
 # intended for internal use, so functions not exported
 
+include("linelist.jl")
+export assign_lines_to_orders
+export add_line_boundaries_to_line_list, expand_line_boundaries_in_line_list
+
 include("chunks.jl")
 export make_orders_into_chunks, make_grid_for_chunk,  extract_chunk_list_timeseries_for_order
 export make_chunk_list_timeseries_from_λ_ranges
