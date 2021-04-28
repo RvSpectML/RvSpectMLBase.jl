@@ -71,6 +71,7 @@ function apply_doppler_boost!(spectra::AS, dict::AbstractDict ) where { AS<:Abst
         have_issued_diffext_warning = true
     end
     if  haskey(dict,:diff_ext_rv)  doppler_factor   *= calc_doppler_factor.(dict[:diff_ext_rv])  end
+    if  haskey(dict,:binaryRV)  doppler_factor   *= calc_doppler_factor.(dict[:binaryRV])  end
     apply_doppler_boost!(spectra,doppler_factor)
     return spectra
 end
