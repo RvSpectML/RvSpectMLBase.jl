@@ -55,7 +55,7 @@ function apply_doppler_boost!(spectra::AS, dict::AbstractDict ) where { AS<:Abst
         doppler_factor *= calc_doppler_factor(dict[:drift_rv])
     end
     =#
-    if !haskey(dict,:ssb_rv) && !haskey(dict,:ssbz) && !have_issued_ssb_warning
+    if !haskey(dict,:ssb_rv) && !haskey(dict,:ssbz) && !haskey(dict,:ssb_rv_kmps) && !have_issued_ssb_warning
          @info "apply_doppler_boost! didn't find :ssb_rv or :ssbz to apply."
          have_issued_ssb_warning = true
     end
@@ -63,6 +63,8 @@ function apply_doppler_boost!(spectra::AS, dict::AbstractDict ) where { AS<:Abst
         doppler_factor   *= calc_doppler_factor(z=dict[:ssbz])
     elseif  haskey(dict,:ssb_rv)
         doppler_factor   *= calc_doppler_factor(dict[:ssb_rv])
+    elseif  haskey(dict,:ssb_rv_kmps)
+        doppler_factor   *= calc_doppler_factor(rv_kmps=dict[:ssb_rv_kmps])
     end
     if !haskey(dict,:diff_ext_rv ) && !have_issued_diffext_warning
         @info "apply_doppler_boost! didn't find :diff_ext_rv to apply."
