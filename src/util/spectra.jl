@@ -116,11 +116,11 @@ function calc_snr end
 
 function calc_snr(flux::AbstractArray{T1},var::AbstractArray{T2}) where {T1<:Real, T2<:Real}
     @assert size(flux) == size(var)
-    sqrt(NaNMath.sum( flux.^2 ./ var))
+    sqrt(NaNMath.sum( max.(0.0,flux.^2 ./ var)))
 end
 
 function calc_snr(flux::Real,var::Real)
-    flux / sqrt(var)
+    flux / sqrt(max(0.0,var))
 end
 
 function calc_snr(spectrum::ST, pixels::AR, order::Integer) where { ST<:AbstractSpectra2D, AR<:AbstractRange{Int64}, AA1<:AbstractArray{Int64,1} } #, AAR<:AbstractArray{AR,1} }
