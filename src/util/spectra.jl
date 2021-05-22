@@ -70,6 +70,7 @@ function apply_doppler_boost!(spectra::AS, dict::AbstractDict ) where { AS<:Abst
         if  haskey(dict,:ssb_rv_kmps)
             @info "apply_doppler_boost! found ssb_rv (in m/s) and ssb_rv_kmps (in km/s). Defaulting to only use ssb_rv."
             have_issued_multiple_ssb_warning = true
+        end
     elseif  haskey(dict,:ssb_rv_kmps)
         doppler_factor   *= calc_doppler_factor(rv_kmps=dict[:ssb_rv_kmps])
     end
