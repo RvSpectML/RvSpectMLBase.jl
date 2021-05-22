@@ -42,7 +42,7 @@ global have_issued_ssb_warning = false
 global have_issued_drift_warning = false
 global have_issued_diffext_warning = false
 function apply_doppler_boost!(spectra::AS, dict::AbstractDict ) where { AS<:AbstractSpectra }
-    global have_issued_ssb_warning, have_issued_drift_warning, have_issued_diffext_warning
+    global have_issued_ssb_warning, have_issued_drift_warning, have_issued_diffext_warning, have_issued_multiple_ssb_warning
     local doppler_factor = one(eltype(spectra.λ))
     #= NEID drift model is now included in wavelengths provided
     if !haskey(dict,:drift_rv) && !haskey(dict,:drift_z ) && !have_issued_drift_warning
@@ -56,13 +56,20 @@ function apply_doppler_boost!(spectra::AS, dict::AbstractDict ) where { AS<:Abst
     end
     =#
     if !haskey(dict,:ssb_rv) && !haskey(dict,:ssbz) && !haskey(dict,:ssb_rv_kmps) && !have_issued_ssb_warning
-         @info "apply_doppler_boost! didn't find :ssb_rv or :ssbz to apply."
+         @info "apply_doppler_boost! didn't find :ssbz, :ssb_rv or :ssb_rv_kmps to apply."
          have_issued_ssb_warning = true
     end
     if  haskey(dict,:ssbz)
         doppler_factor   *= calc_doppler_factor(z=dict[:ssbz])
+        if  haskey(dict,:ssb_rv) || haskey(dict,:ssb_rv_kmps)
+            @info "apply_doppler_boost! found ssbz and either ssb_rv or ssb_rv_kmps. Defaulting to only use ssbz."
+            have_issued_multiple_ssb_warning = true
+        end
     elseif  haskey(dict,:ssb_rv)
         doppler_factor   *= calc_doppler_factor(dict[:ssb_rv])
+        if  haskey(dict,:ssb_rv_kmps)
+            @info "apply_doppler_boost! found ssb_rv (in m/s) and ssb_rv_kmps (in km/s). Defaulting to only use ssb_rv."
+            have_issued_multiple_ssb_warning = true
     elseif  haskey(dict,:ssb_rv_kmps)
         doppler_factor   *= calc_doppler_factor(rv_kmps=dict[:ssb_rv_kmps])
     end
