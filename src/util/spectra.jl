@@ -42,7 +42,7 @@ global have_issued_ssb_warning = false
 global have_issued_drift_warning = false
 global have_issued_diffext_warning = false
 function apply_doppler_boost!(spectra::AS, dict::AbstractDict ) where { AS<:AbstractSpectra }
-    global have_issued_ssb_warning, have_issued_drift_warning, have_issued_diffext_warning
+    global have_issued_ssb_warning, have_issued_drift_warning, have_issued_diffext_warning, have_issued_multiple_ssb_warning
     local doppler_factor = one(eltype(spectra.λ))
     #= NEID drift model is now included in wavelengths provided
     if !haskey(dict,:drift_rv) && !haskey(dict,:drift_z ) && !have_issued_drift_warning
@@ -55,14 +55,24 @@ function apply_doppler_boost!(spectra::AS, dict::AbstractDict ) where { AS<:Abst
         doppler_factor *= calc_doppler_factor(dict[:drift_rv])
     end
     =#
-    if !haskey(dict,:ssb_rv) && !haskey(dict,:ssbz) && !have_issued_ssb_warning
-         @info "apply_doppler_boost! didn't find :ssb_rv or :ssbz to apply."
+    if !haskey(dict,:ssb_rv) && !haskey(dict,:ssbz) && !haskey(dict,:ssb_rv_kmps) && !have_issued_ssb_warning
+         @info "apply_doppler_boost! didn't find :ssbz, :ssb_rv or :ssb_rv_kmps to apply."
          have_issued_ssb_warning = true
     end
     if  haskey(dict,:ssbz)
         doppler_factor   *= calc_doppler_factor(z=dict[:ssbz])
+        if  haskey(dict,:ssb_rv) || haskey(dict,:ssb_rv_kmps)
+            @info "apply_doppler_boost! found ssbz and either ssb_rv or ssb_rv_kmps. Defaulting to only use ssbz."
+            have_issued_multiple_ssb_warning = true
+        end
     elseif  haskey(dict,:ssb_rv)
         doppler_factor   *= calc_doppler_factor(dict[:ssb_rv])
+        if  haskey(dict,:ssb_rv_kmps)
+            @info "apply_doppler_boost! found ssb_rv (in m/s) and ssb_rv_kmps (in km/s). Defaulting to only use ssb_rv."
+            have_issued_multiple_ssb_warning = true
+        end
+    elseif  haskey(dict,:ssb_rv_kmps)
+        doppler_factor   *= calc_doppler_factor(rv_kmps=dict[:ssb_rv_kmps])
     end
     #=
     # Now plan to apply correction at end, rather than to wavelength  
@@ -71,6 +81,7 @@ function apply_doppler_boost!(spectra::AS, dict::AbstractDict ) where { AS<:Abst
         have_issued_diffext_warning = true
     end
     if  haskey(dict,:diff_ext_rv)  doppler_factor   *= calc_doppler_factor.(dict[:diff_ext_rv])  end
+    if  haskey(dict,:binaryRV)  doppler_factor   *= calc_doppler_factor.(dict[:binaryRV])  end
     apply_doppler_boost!(spectra,doppler_factor)
     =#
     return spectra
@@ -122,11 +133,11 @@ function calc_snr end
 
 function calc_snr(flux::AbstractArray{T1},var::AbstractArray{T2}) where {T1<:Real, T2<:Real}
     @assert size(flux) == size(var)
-    sqrt(NaNMath.sum( flux.^2 ./ var))
+    sqrt(NaNMath.sum( max.(0.0,flux.^2 ./ var)))
 end
 
 function calc_snr(flux::Real,var::Real)
-    flux / sqrt(var)
+    flux / sqrt(max(0.0,var))
 end
 
 function calc_snr(spectrum::ST, pixels::AR, order::Integer) where { ST<:AbstractSpectra2D, AR<:AbstractRange{Int64}, AA1<:AbstractArray{Int64,1} } #, AAR<:AbstractArray{AR,1} }

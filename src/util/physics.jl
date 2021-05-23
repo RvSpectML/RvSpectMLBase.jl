@@ -43,6 +43,8 @@ calc_doppler_factor(rv::Real, v_perp::Real) = (one(rv) + rv/speed_of_light_mps)/
 
 calc_doppler_factor(;z::Real) = one(z) + z
 
+calc_doppler_factor(;rv_kmps::Real) = one(rv_kmps) + rv_kmps*1000.0/speed_of_light_mps
+
 
 """
    `absorption_line(x; mid, width, depth)`
