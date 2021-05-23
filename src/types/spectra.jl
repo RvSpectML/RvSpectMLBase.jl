@@ -67,7 +67,9 @@ function Spectra2DBasic(λ::A1, flux::A2, var::A3, inst::InstT;
      InstT<:AbstractInstrument  }
     @assert size(λ) == size(flux)
     @assert size(λ) == size(var)
-    @assert 1 <= min_pixel_in_order(inst) <= max_pixel_in_order(inst) <= size(λ,1)
-    @assert 1 <= min_order(inst) <= max_order(inst) <= size(λ,2)
+    @assert 1 <= size(λ,1) <= max_pixel_in_order(inst)
+    @assert 1 <= size(λ,2) <= max_order(inst)
+    @assert 1 <= min_order(inst) <= max_order(inst)
+    @assert 1 <= min_pixel_in_order(inst) <= max_pixel_in_order(inst)
     Spectra2DBasic{eltype(λ),eltype(flux),eltype(var),typeof(λ),typeof(flux),typeof(var),typeof(inst)}(λ,flux,var,inst,metadata)
 end
