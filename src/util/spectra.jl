@@ -64,12 +64,15 @@ function apply_doppler_boost!(spectra::AS, dict::AbstractDict ) where { AS<:Abst
     elseif  haskey(dict,:ssb_rv)
         doppler_factor   *= calc_doppler_factor(dict[:ssb_rv])
     end
+    #=
+    # Now plan to apply correction at end, rather than to wavelength  
     if !haskey(dict,:diff_ext_rv ) && !have_issued_diffext_warning
         @info "apply_doppler_boost! didn't find :diff_ext_rv to apply."
         have_issued_diffext_warning = true
     end
     if  haskey(dict,:diff_ext_rv)  doppler_factor   *= calc_doppler_factor.(dict[:diff_ext_rv])  end
     apply_doppler_boost!(spectra,doppler_factor)
+    =#
     return spectra
 end
 
@@ -79,6 +82,7 @@ function apply_doppler_boost!(spectra::AbstractArray{AS}, df::DataFrame ) where 
     local doppler_factor = ones(size(spectra))
     #if !hasproperty(df,:drift) @info "apply_doppler_boost! didn't find :drift to apply."   end
     #if  hasproperty(df,:drift)        doppler_factor .*= calc_doppler_factor.(df[!,:drift])          end
+    #= NEID drift model is now included in wavelengths provided
     if !haskey(dict,:drift_rv) && !haskey(dict,:drift_z ) && !have_issued_drift_warning
         @info "apply_doppler_boost! didn't find :drift_rv or :drivft_z to apply."
         have_issued_drift_warning = true
@@ -88,7 +92,7 @@ function apply_doppler_boost!(spectra::AbstractArray{AS}, df::DataFrame ) where 
     elseif  haskey(dict,:drift_rv)
         doppler_factor *= calc_doppler_factor(dict[:drift_rv])
     end
-
+    =#
     if !hasproperty(df,:ssb_rv) && !hasproperty(df,:ssbz)  && !have_issued_ssb_warning
         @info "apply_doppler_boost! didn't find :ssb_rv or :ssbz to apply."
         have_issued_ssb_warning = true
@@ -98,11 +102,13 @@ function apply_doppler_boost!(spectra::AbstractArray{AS}, df::DataFrame ) where 
     elseif  hasproperty(df,:ssb_rv)
         doppler_factor   .*= calc_doppler_factor.(df[!,:ssb_rv])
     end
+    #= Now plan to apply correction at end, rather than to wavelength
     if !hasproperty(df,:drift) && !have_issued_diffext_warning
         @info "apply_doppler_boost! didn't find :diff_ext_rv to apply."
         have_issued_diffext_warning = true
     end
     if  hasproperty(df,:diff_ext_rv)  doppler_factor   .*= calc_doppler_factor.(df[!,:diff_ext_rv])  end
+    =#
     map(x->apply_doppler_boost!(x[1],x[2]), zip(spectra,doppler_factor) );
 end
 
