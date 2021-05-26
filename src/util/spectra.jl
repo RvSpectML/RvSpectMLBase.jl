@@ -81,9 +81,9 @@ function apply_doppler_boost!(spectra::AS, dict::AbstractDict ) where { AS<:Abst
         have_issued_diffext_warning = true
     end
     if  haskey(dict,:diff_ext_rv)  doppler_factor   *= calc_doppler_factor.(dict[:diff_ext_rv])  end
+    =#
     if  haskey(dict,:binaryRV)  doppler_factor   *= calc_doppler_factor.(dict[:binaryRV])  end
     apply_doppler_boost!(spectra,doppler_factor)
-    =#
     return spectra
 end
 
@@ -108,7 +108,7 @@ function apply_doppler_boost!(spectra::AbstractArray{AS}, df::DataFrame ) where 
         @info "apply_doppler_boost! didn't find :ssb_rv or :ssbz to apply."
         have_issued_ssb_warning = true
     end
-    if  hasproperty(df,:ssb_z)
+    if  hasproperty(df,:ssbz)
         doppler_factor   .*= calc_doppler_factor.(z=df[!,:ssbz])
     elseif  hasproperty(df,:ssb_rv)
         doppler_factor   .*= calc_doppler_factor.(df[!,:ssb_rv])
