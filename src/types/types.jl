@@ -6,7 +6,7 @@ export AbstractInstrument, AbstractInstrument1D, AbstractInstrument2D
 
 include("spectra.jl")
 export AbstractSpectra, AbstractSpectra1D, AbstractSpectra2D
-export Spectra1DBasic, Spectra2DBasic
+export Spectra1DBasic, Spectra2DBasic, Spectra2DExtended
 
 include("chunks.jl")
 export AbstractChunkOfSpectrum, ChunkOfSpectrum
