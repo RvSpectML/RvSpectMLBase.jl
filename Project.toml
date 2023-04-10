@@ -1,7 +1,7 @@
 name = "RvSpectMLBase"
 uuid = "c48404b2-35ea-40e7-ac7f-06a53de703d6"
 authors = ["Eric Ford"]
-version = "0.2.2"
+version = "0.2.3"
 
 [deps]
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
@@ -21,7 +21,7 @@ Interpolations = "0.12, 0.13, 0.14"
 NaNMath = "0.3, 1"
 Query = "1.0"
 SpecialFunctions = "1.0, 1.1, 2"
-julia = "1.6, 1.7"
+julia = "1.6, 1.7, 1.8, 1.9"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
