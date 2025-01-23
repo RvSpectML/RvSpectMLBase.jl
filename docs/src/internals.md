@@ -18,12 +18,12 @@ Public = false
 Order = [ :function ]
 ```
 
-### Interpolation
+<!-- ### Interpolation
 ```@autodocs
 Modules = [RvSpectMLBase.LinearInterpolation ]
 Public = false
 Order = [ :function]
-```
+``` -->
 
 ### Instrument specific
 ```@autodocs
@@ -48,12 +48,12 @@ Public = false
 Order = [:type ]
 ```
 
-### Interpolation
+<!-- ### Interpolation
 ```@autodocs
 Modules = [RvSpectMLBase.LinearInterpolation ]  
 Public = false
 Order = [:type ]
-```
+``` -->
 
 ### Instrument specific
 ```@autodocs
