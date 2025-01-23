@@ -18,12 +18,6 @@ Public = false
 Order = [ :function ]
 ```
 
-<!-- ### Interpolation
-```@autodocs
-Modules = [RvSpectMLBase.LinearInterpolation ]
-Public = false
-Order = [ :function]
-``` -->
 
 ### Instrument specific
 ```@autodocs
@@ -47,13 +41,6 @@ Modules = [RvSpectMLBase ]
 Public = false
 Order = [:type ]
 ```
-
-<!-- ### Interpolation
-```@autodocs
-Modules = [RvSpectMLBase.LinearInterpolation ]  
-Public = false
-Order = [:type ]
-``` -->
 
 ### Instrument specific
 ```@autodocs
